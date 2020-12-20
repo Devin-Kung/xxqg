@@ -102,12 +102,3 @@ def check_task(browser):
     return res
 
 
-if __name__ == '__main__':
-    # 实例化谷歌设置选项
-    option = webdriver.ChromeOptions()
-    # 添加保持登录的数据路径
-    option.add_argument(r"--user-data-dir=C:\Users\Raichu\AppData\Local\Google\Chrome\User Data")
-    browser = webdriver.Chrome(options=option)
-    # browser = webdriver.Chrome()
-    check_task(browser)
-    # browser.quit()
