@@ -53,16 +53,3 @@ def watch_video(browser):
         f.write(json.dumps(videos, ensure_ascii=False, indent=4))
 
 
-if __name__ == '__main__':
-    # # 实例化谷歌设置选项
-    # option = webdriver.ChromeOptions()
-    # # 添加保持登录的数据路径
-    # option.add_argument(r"--user-data-dir=C:\Users\Raichu\AppData\Local\Google\Chrome\User Data")
-    # browser = webdriver.Chrome(options=option)
-
-    from selenium.webdriver.chrome.options import Options
-    chrome_options = Options()
-    chrome_options.add_argument("--mute-audio")  # 静音
-    browser = webdriver.Chrome(options=chrome_options)
-    watch_video(browser)
-    browser.quit()
