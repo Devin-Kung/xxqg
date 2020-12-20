@@ -195,14 +195,3 @@ def run_exam(browser):
             print('--> 答题结束')
             break
 
-
-if __name__ == '__main__':
-    # 实例化谷歌设置选项
-    option = webdriver.ChromeOptions()
-    # 添加保持登录的数据路径
-    option.add_argument(r"--user-data-dir=C:\Users\Raichu\AppData\Local\Google\Chrome\User Data")
-    browser = webdriver.Chrome(options=option)
-    # browser = webdriver.Chrome()
-    to_exam(browser, check.CheckResType.WEEKLY_EXAM)
-    os.system('pause')
-    # browser.quit()
