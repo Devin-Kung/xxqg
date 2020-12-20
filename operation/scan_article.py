@@ -41,13 +41,3 @@ def scan_article(browser):
     with open(articlePath, 'w', encoding='utf-8') as f:
         f.write(json.dumps(articles, ensure_ascii=False, indent=4))
 
-
-if __name__ == '__main__':
-    # # 实例化谷歌设置选项
-    # option = webdriver.ChromeOptions()
-    # # 添加保持登录的数据路径
-    # option.add_argument(r"--user-data-dir=C:\Users\Raichu\AppData\Local\Google\Chrome\User Data")
-    # browser = webdriver.Chrome(options=option)
-    browser = webdriver.Chrome()
-    scan_article(browser)
-    browser.quit()
