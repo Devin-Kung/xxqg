@@ -24,5 +24,4 @@
 1. win10偶尔莫名其妙报毒，可能是这个脚本控制了浏览器，所以被勿认为成危险程序，加白名单就好，放心使用
 2. 如果脚本控制台长时间不动，可以尝试输入回车或重启脚本，暂时不知道原因
 3. 答题时如果报如下错：
-   `Message: element click intercepted: Element xxxxxxxxxxx is not clickable at point (xxx, xxx). Other element would receive the click: xxxxxxxxxxxxxxxxxxxx`
-   这是因为浏览器窗口太小了，尝试将浏览器全屏或将窗口拉大一点
+   `Message: element click intercepted: Element xxxxxxxxxxx is not clickable at point (xxx, xxx). Other element would receive the click: xxxxxxxxxxxxxxxxxxxx`<br>这是因为浏览器窗口太小了，尝试将浏览器全屏或将窗口拉大一点
