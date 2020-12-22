@@ -111,13 +111,17 @@ def run_exam(browser):
                 options = browser.find_elements_by_class_name('choosable')
                 # for text in options:
                 #     print('-->    ' + text.text)
-                ansDict = {}  # 存放每个选项与提示的相似度
-                for i in range(len(options)):
-                    ansDict[i] = difflib.SequenceMatcher(None, tips[0], options[i].text[3:]).ratio()
-                ansDict = sorted(ansDict.items(), key=lambda x: x[1], reverse=True)
-                # print(ansDict)
-                print('-->    最大概率选项： ' + options[ansDict[0][0]].text[0])
-                options[ansDict[0][0]].click()
+                if len(tips) == 0:
+                    time.sleep(round(random.uniform(0.5, 1.5), 2))
+                    options[0].click()
+                else:
+                    ansDict = {}  # 存放每个选项与提示的相似度
+                    for i in range(len(options)):
+                        ansDict[i] = difflib.SequenceMatcher(None, tips[0], options[i].text[3:]).ratio()
+                    ansDict = sorted(ansDict.items(), key=lambda x: x[1], reverse=True)
+                    # print(ansDict)
+                    print('-->    最大概率选项： ' + options[ansDict[0][0]].text[0])
+                    options[ansDict[0][0]].click()
 
                 time.sleep(round(random.uniform(0.5, 2), 2))
                 okBtn.click()
@@ -127,34 +131,40 @@ def run_exam(browser):
                 options = browser.find_elements_by_class_name('choosable')
                 # for text in options:
                 #     print('-->    ' + text.text)
-                # 如果选项数量多于提示数量，则匹配出最可能的选项
-                if len(options) > len(tips):
-                    ans = []  # 存放匹配出的最终结果
-                    for i in range(len(tips)):
-                        ansDict = {}  # 存放每个选项与提示的相似度
-                        for j in range(len(options)):
-                            ansDict[j] = difflib.SequenceMatcher(None, tips[i], options[j].text[3:]).ratio()
-                        # print(ansDict)
-                        ansDict = sorted(ansDict.items(), key=lambda x: x[1], reverse=True)
-                        ans.append(ansDict[0][0])
-                    ans = list(set(ans))
-                    # print(ans)
-                    print('-->    最大概率选项：', end='')
-                    for i in range(len(ans)):
-                        print(' ' + options[ans[i]].text[0], end='')
-                    print()
-                    for i in range(len(ans)):
-                        time.sleep(round(random.uniform(0.5, 1.5), 2))
-                        options[ans[i]].click()
-                # 如果选项数量和提示数量相同或少于提示数量，则全选
+                if len(tips) == 0:
+                    time.sleep(round(random.uniform(0.5, 1.5), 2))
+                    options[0].click()
+                    time.sleep(round(random.uniform(0.5, 1.5), 2))
+                    options[1].click()
                 else:
-                    print('-->    最大概率选项：', end='')
-                    for i in range(len(options)):
-                        print(' ' + options[i].text[0], end='')
-                    print()
-                    for i in range(len(options)):
-                        time.sleep(round(random.uniform(0.5, 1.5), 2))
-                        options[i].click()
+                    # 如果选项数量多于提示数量，则匹配出最可能的选项
+                    if len(options) > len(tips):
+                        ans = []  # 存放匹配出的最终结果
+                        for i in range(len(tips)):
+                            ansDict = {}  # 存放每个选项与提示的相似度
+                            for j in range(len(options)):
+                                ansDict[j] = difflib.SequenceMatcher(None, tips[i], options[j].text[3:]).ratio()
+                            # print(ansDict)
+                            ansDict = sorted(ansDict.items(), key=lambda x: x[1], reverse=True)
+                            ans.append(ansDict[0][0])
+                        ans = list(set(ans))
+                        # print(ans)
+                        print('-->    最大概率选项：', end='')
+                        for i in range(len(ans)):
+                            print(' ' + options[ans[i]].text[0], end='')
+                        print()
+                        for i in range(len(ans)):
+                            time.sleep(round(random.uniform(0.5, 1.5), 2))
+                            options[ans[i]].click()
+                    # 如果选项数量和提示数量相同或少于提示数量，则全选
+                    else:
+                        print('-->    最大概率选项：', end='')
+                        for i in range(len(options)):
+                            print(' ' + options[i].text[0], end='')
+                        print()
+                        for i in range(len(options)):
+                            time.sleep(round(random.uniform(0.5, 1.5), 2))
+                            options[i].click()
 
                 time.sleep(round(random.uniform(0.5, 2), 2))
                 okBtn.click()
