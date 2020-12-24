@@ -5,8 +5,6 @@ import random
 import difflib
 import re
 from userOperation import check
-import os
-from selenium import webdriver
 
 
 def check_exam(browser, examType):
