@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+import subprocess
 from getData import get_article
 from getData import get_video
 from operation import scan_article
@@ -8,7 +9,6 @@ from userOperation import login
 from userOperation import check
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-import os
 import random
 
 
@@ -68,7 +68,7 @@ def finally_run():
                    _\/\\\\\\\\\\\\\/________\/\\\____________\//\\\\\\\\\\\\/__\/\\\\\\\\\\\\/___\/\\\_____________ 
                     _\/////////////__________\///______________\////////////____\////////////_____\///______________ 
             ''')
-    os.system('pause')
+    subprocess.Popen('pause', close_fds=True)
 
 
 if __name__ == "__main__":
