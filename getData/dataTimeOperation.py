@@ -1,7 +1,7 @@
 import time
 import datetime
 import json
-import os
+import pathlib
 
 
 def get_diff(date_str):
@@ -20,7 +20,7 @@ def get_diff(date_str):
 
 def is_get_data(file_type):
     dataPath = './data/lastTime.json'
-    if not os.path.exists(dataPath):
+    if not pathlib.Path(dataPath).is_file():
         with open(dataPath, 'w', encoding='utf-8') as f:
             dataDict = {
                 'articles': '2020-01-01',
