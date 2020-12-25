@@ -74,6 +74,8 @@ def finally_run():
 if __name__ == "__main__":
     chrome_options = Options()
     chrome_options.add_argument("--mute-audio")
+    chrome_options.add_argument('--ignore-certificate-errors')
+    chrome_options.add_argument('--ignore-ssl-errors')
     browser = webdriver.Chrome(options=chrome_options)
     browser.maximize_window()
 
