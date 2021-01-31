@@ -1,4 +1,4 @@
-# 此脚本最后测试于2021/1/26，运行正常
+# 此脚本最后测试于2021/1/31，运行正常
 
 # 声明
 
@@ -7,11 +7,12 @@
 
 # 开始：
 
+0. 可以将源码下载或clone到本地仓库，自行编译运行，也可以在[`Release`](https://github.com/PRaichu/xxqg/releases)中下载我已经编译了的版本
 1. 请确保你电脑中已经安装最新chrome浏览器，没有安装请先去  https://www.google.cn/chrome/  下载安装
 2. 点击运行 `学习强国.exe` ，根据提示进行操作
 3. 脚本运行过程中请勿关闭或最小化浏览器，否则可能会失败，并且可能有检测风险
 4. 可将脚本控制台置于最前，查看运行进度
-5. 压缩包中已内置`chromedriver.exe`，但其版本为`87.0.4280.87`，如果你的Chrome浏览器版本高于此版本，请去 http://npm.taobao.org/mirrors/chromedriver/ 下载你浏览器的对应版本，解压后替换原版本
+5. 【注意】压缩包中已内置`chromedriver.exe`，但其版本为`87.0.4280.87`，如果你的Chrome浏览器版本高于此版本，请去 http://npm.taobao.org/mirrors/chromedriver/ 下载你浏览器的对应版本，解压后替换原版本
 
 # 安全：
 
@@ -24,7 +25,8 @@
 
 # 已知问题：
 
-1. win10偶尔莫名其妙报毒，可能是这个脚本控制了浏览器，所以被勿认为成危险程序，加白名单就好，放心使用
+1. win10偶尔报毒，加白名单就好，放心使用
 2. 如果脚本控制台长时间不动，可以尝试输入回车或重启脚本，暂时不知道原因
 3. 答题时如果报如下错：
    `Message: element click intercepted: Element xxxxxxxxxxx is not clickable at point (xxx, xxx). Other element would receive the click: xxxxxxxxxxxxxxxxxxxx`<br>这是因为浏览器窗口太小了，尝试将浏览器全屏或将窗口拉大一点
+4. 如果使用时还有其他问题，欢迎发`issue`反馈
