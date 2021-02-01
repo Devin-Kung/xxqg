@@ -12,7 +12,7 @@
 2. 点击运行 `学习强国.exe` ，根据提示进行操作
 3. 脚本运行过程中请勿关闭或最小化浏览器，否则可能会失败，并且可能有检测风险
 4. 可将脚本控制台置于最前，查看运行进度
-5. 【注意】压缩包中已内置`chromedriver.exe`，但其版本为`87.0.4280.87`，如果你的Chrome浏览器版本高于此版本，请去 http://npm.taobao.org/mirrors/chromedriver/ 下载你浏览器的对应版本（版本号与[浏览器版本号](chrome://settings/help)前三位一致即可），解压后替换原版本
+5. 【注意】压缩包中已内置`chromedriver.exe`，但其版本为`88.0.4324.96`，如果你的Chrome浏览器版本高于此版本，请去 http://npm.taobao.org/mirrors/chromedriver/ 下载你浏览器的对应版本（版本号与[浏览器版本号](chrome://settings/help)前三位一致即可），解压后替换原版本
 
 # 安全：
 
@@ -21,11 +21,13 @@
 
 # 设置：
 
-1. 答题设置可以在 `data/settings.json`中修改，true表示执行，false表示不执行，只有当“自动答题”为true时，下面的答题设置才会生效，刷视频和文章暂不支持设置
+1. 支持对自动答题、浏览文章、观看视频进行设置
+2. 设置可以在 `data/settings.json`中修改，true表示执行，false表示不执行 
+3. 【注意】只有当“自动答题”为true时，其他答题设置才会生效
 
 # 已知问题：
 
-1. win10偶尔报毒，加白名单就好，放心使用
+1. 如果win10报毒，加白名单就好，开源项目放心使用
 2. 如果脚本控制台长时间不动，可以尝试输入回车或重启脚本，暂时不知道原因
 3. 答题时如果报如下错：<br>
    `Message: element click intercepted: Element xxxxxxxxxxx is not clickable at point (xxx, xxx). Other element would receive the click: xxxxxxxxxxxxxxxxxxxx`<br>这是因为浏览器窗口太小了，尝试将浏览器全屏或将窗口拉大一点
