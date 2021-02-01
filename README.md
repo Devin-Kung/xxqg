@@ -9,7 +9,7 @@
 
 0. 可以将源码下载或clone到本地仓库，自行编译运行，也可以在[ Release ](https://github.com/PRaichu/xxqg/releases)中下载我已经编译了的版本
 1. 请确保你电脑中已经安装最新chrome浏览器，没有安装请先去  https://www.google.cn/chrome/  下载安装
-2. 点击运行 `学习强国.exe` ，根据提示进行操作
+2. 点击运行 `xuexi.exe` ，根据提示进行操作
 3. 脚本运行过程中请勿关闭或最小化浏览器，否则可能会失败，并且可能有检测风险
 4. 可将脚本控制台置于最前，查看运行进度
 5. 【注意】压缩包中已内置`chromedriver.exe`，但其版本为`88.0.4324.96`，如果你的Chrome浏览器版本高于此版本，请去 http://npm.taobao.org/mirrors/chromedriver/ 下载你浏览器的对应版本（版本号与浏览器版本号前三位一致即可），解压后替换原版本
