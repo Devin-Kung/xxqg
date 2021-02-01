@@ -45,22 +45,48 @@ def check_task(browser):
 
     # 每日登录积分
     login = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[3]/div[2]/div[1]/div[2]/div[1]/div[2]')
-    tableRow.append(login.text)
+    tableRow.append(login.text.strip())
 
     # 选读文章积分
     article = browser.find_element_by_xpath('/html/body/div[1]/div/div[2]/div/div[3]/div[2]/div[2]/div[3]/div[1]/div[2]')
-    tableRow.append(article.text)
-    if article.text != '12分/12分':
-        res = CheckResType.ARTICLE
-
+    tableRow.append(article.text.strip())
     # 视听学习积分
     video = browser.find_element_by_xpath('/html/body/div[1]/div/div[2]/div/div[3]/div[2]/div[3]/div[2]/div[1]/div[2]')
-    tableRow.append(video.text)
-
+    tableRow.append(video.text.strip())
     # 视听学习时长积分
     video_time = browser.find_element_by_xpath('/html/body/div[1]/div/div[2]/div/div[3]/div[2]/div[4]/div[2]/div[1]/div[2]')
-    tableRow.append(video_time.text)
-    if video.text != '6分/6分' or video_time.text != '6分/6分':
+    tableRow.append(video_time.text.strip())
+    # 每日答题积分
+    daily = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[3]/div[2]/div[5]/div[2]/div[1]/div[2]')
+    tableRow.append(daily.text.strip())
+    # 每周答题积分
+    weekly = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[3]/div[2]/div[6]/div[2]/div[1]/div[2]')
+    tableRow.append(weekly.text.strip())
+    # 专项答题积分
+    special = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[3]/div[2]/div[7]/div[2]/div[1]/div[2]')
+    tableRow.append(special.text.strip())
+    # 今日积分
+    todayPoints = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[2]/div[2]/span[3]')
+    tableRow.append(todayPoints.text.strip())
+    # 总积分
+    allPoints = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[2]/div[2]/span[1]')
+    tableRow.append(allPoints.text.strip())
+
+    # 打印表格
+    table.add_row(tableRow[0],
+                  tableRow[1],
+                  tableRow[2],
+                  tableRow[3],
+                  tableRow[4],
+                  tableRow[5],
+                  tableRow[6],
+                  tableRow[7] + '分',
+                  tableRow[8] + '分')
+    print(table)
+
+    if settings['浏览文章'] == "true" and article.text != '12分/12分':
+        res = CheckResType.ARTICLE
+    if settings['观看视频'] == "true" and (video.text != '6分/6分' or video_time.text != '6分/6分'):
         if res == CheckResType.ARTICLE:
             res = CheckResType.ARTICLE_AND_VIDEO
         else:
@@ -70,35 +96,13 @@ def check_task(browser):
     if settings['自动答题'] != 'true':
         return res
 
-    # 每日答题积分
-    daily = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[3]/div[2]/div[5]/div[2]/div[1]/div[2]')
-    tableRow.append(daily.text)
-    if settings['每日答题'] == 'true':
-        if res == CheckResType.NULL and daily.text != '5分/5分':
-            res = CheckResType.DAILY_EXAM
+    if settings['每日答题'] == 'true' and res == CheckResType.NULL and daily.text != '5分/5分':
+        res = CheckResType.DAILY_EXAM
+    if settings['每周答题'] == 'true' and res == CheckResType.NULL and weekly.text != '5分/5分':
+        res = CheckResType.WEEKLY_EXAM
+    if settings['专项答题'] == 'true' and res == CheckResType.NULL and special.text != '10分/10分':
+        res = CheckResType.SPECIAL_EXAM
 
-    # 每周答题积分
-    weekly = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[3]/div[2]/div[6]/div[2]/div[1]/div[2]')
-    tableRow.append(weekly.text)
-    if settings['每周答题'] == 'true':
-        if res == CheckResType.NULL and weekly.text != '5分/5分':
-            res = CheckResType.WEEKLY_EXAM
-
-    # 专项答题积分
-    special = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[3]/div[2]/div[7]/div[2]/div[1]/div[2]')
-    tableRow.append(special.text)
-    if settings['专项答题'] == 'true':
-        if res == CheckResType.NULL and special.text != '10分/10分':
-            res = CheckResType.SPECIAL_EXAM
-
-    # 今日积分
-    todayPoints = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[2]/div[2]/span[3]')
-    # 总积分
-    allPoints = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[2]/div[2]/span[1]')
-    tableRow.append(todayPoints.text)
-    tableRow.append(allPoints.text)
-    table.add_row(tableRow[0], tableRow[1], tableRow[2], tableRow[3], tableRow[4], tableRow[5], tableRow[6], tableRow[7] + '分', tableRow[8] + '分')
-    print(table)
     return res
 
 

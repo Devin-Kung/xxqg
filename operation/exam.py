@@ -8,6 +8,12 @@ from userOperation import check
 
 
 def check_exam(browser, examType):
+    """
+    检查可做的题目
+    :param browser: browser
+    :param examType: 题目类型(周、专)
+    :return: null
+    """
     time.sleep(round(random.uniform(1, 2), 2))
     allExams = browser.find_elements_by_class_name('ant-btn-primary')
     while True:
@@ -63,10 +69,19 @@ def to_exam(browser, examType):
     run_exam(browser)
 
 
+def select_all(options):
+    print('-->    最大概率选项：', end='')
+    for i in range(len(options)):
+        print(' ' + options[i].text[0], end='')
+    print()
+    for i in range(len(options)):
+        time.sleep(round(random.uniform(0.5, 1.5), 2))
+        options[i].click()
+
+
 def run_exam(browser):
-    # url = 'https://pc.xuexi.cn/points/exam-practice.html'
-    # url = 'https://pc.xuexi.cn/points/exam-paper-detail.html?id=297'
-    # browser.get(url)
+    url = 'https://pc.xuexi.cn/points/exam-practice.html'
+    browser.get(url)
     while True:
         content = browser.find_element_by_class_name('ant-breadcrumb')
         browser.execute_script('arguments[0].scrollIntoView();', content)
@@ -102,13 +117,10 @@ def run_exam(browser):
             tips.clear()
             for tip in tipsContent:
                 tips.append(tip.text)
-                # print('--> #提示# ' + tip.text)
 
             if '单选题' in questionType:
                 # 选择题，获取所有选项
                 options = browser.find_elements_by_class_name('choosable')
-                # for text in options:
-                #     print('-->    ' + text.text)
                 if len(tips) == 0:
                     time.sleep(round(random.uniform(0.5, 1.5), 2))
                     options[0].click()
@@ -127,42 +139,39 @@ def run_exam(browser):
             elif '多选题' in questionType:
                 # 选择题，获取所有选项
                 options = browser.find_elements_by_class_name('choosable')
-                # for text in options:
-                #     print('-->    ' + text.text)
-                if len(tips) == 0:
-                    time.sleep(round(random.uniform(0.5, 1.5), 2))
-                    options[0].click()
-                    time.sleep(round(random.uniform(0.5, 1.5), 2))
-                    options[1].click()
+                qWord = browser.find_element_by_class_name('q-body').text
+                bracketCount = len(re.findall('（）', qWord))
+                if len(options) == bracketCount:
+                    select_all(options)
                 else:
-                    # 如果选项数量多于提示数量，则匹配出最可能的选项
-                    if len(options) > len(tips):
-                        ans = []  # 存放匹配出的最终结果
-                        for i in range(len(tips)):
-                            ansDict = {}  # 存放每个选项与提示的相似度
-                            for j in range(len(options)):
-                                ansDict[j] = difflib.SequenceMatcher(None, tips[i], options[j].text[3:]).ratio()
-                            # print(ansDict)
-                            ansDict = sorted(ansDict.items(), key=lambda x: x[1], reverse=True)
-                            ans.append(ansDict[0][0])
-                        ans = list(set(ans))
-                        # print(ans)
-                        print('-->    最大概率选项：', end='')
-                        for i in range(len(ans)):
-                            print(' ' + options[ans[i]].text[0], end='')
-                        print()
-                        for i in range(len(ans)):
-                            time.sleep(round(random.uniform(0.5, 1.5), 2))
-                            options[ans[i]].click()
-                    # 如果选项数量和提示数量相同或少于提示数量，则全选
+                    if len(tips) == 0:
+                        time.sleep(round(random.uniform(0.5, 1.5), 2))
+                        options[0].click()
+                        time.sleep(round(random.uniform(0.5, 1.5), 2))
+                        options[1].click()
                     else:
-                        print('-->    最大概率选项：', end='')
-                        for i in range(len(options)):
-                            print(' ' + options[i].text[0], end='')
-                        print()
-                        for i in range(len(options)):
-                            time.sleep(round(random.uniform(0.5, 1.5), 2))
-                            options[i].click()
+                        # 如果选项数量多于提示数量，则匹配出最可能的选项
+                        if len(options) > len(tips):
+                            ans = []  # 存放匹配出的最终结果
+                            for i in range(len(tips)):
+                                ansDict = {}  # 存放每个选项与提示的相似度
+                                for j in range(len(options)):
+                                    ansDict[j] = difflib.SequenceMatcher(None, tips[i], options[j].text[3:]).ratio()
+                                # print(ansDict)
+                                ansDict = sorted(ansDict.items(), key=lambda x: x[1], reverse=True)
+                                ans.append(ansDict[0][0])
+                            ans = list(set(ans))
+                            # print(ans)
+                            print('-->    最大概率选项：', end='')
+                            for i in range(len(ans)):
+                                print(' ' + options[ans[i]].text[0], end='')
+                            print()
+                            for i in range(len(ans)):
+                                time.sleep(round(random.uniform(0.5, 1.5), 2))
+                                options[ans[i]].click()
+                        # 如果选项数量和提示数量相同或少于提示数量，则全选
+                        else:
+                            select_all(options)
 
                 time.sleep(round(random.uniform(0.5, 2), 2))
                 okBtn.click()
@@ -170,17 +179,18 @@ def run_exam(browser):
             elif '填空题' in questionType:
                 # 填空题，获取所有输入框
                 blanks = browser.find_elements_by_class_name('blank')
-
-                if len(blanks) <= len(tips):
-                    for i in range(len(blanks)):
-                        time.sleep(round(random.uniform(0.5, 1.5), 2))
-                        print('-->    第{0}空答案可能是： {1}'.format(i + 1, tips[i]))
-                        blanks[i].send_keys(tips[i])
-                else:
-                    for i in range(len(blanks)):
-                        time.sleep(round(random.uniform(0.5, 1.5), 2))
-                        print('-->    未找到提示')
-                        blanks[i].send_keys('不知道')
+                tips_i = 0
+                for i in range(len(blanks)):
+                    time.sleep(round(random.uniform(0.5, 1.5), 2))
+                    if len(tips) > tips_i and tips[tips_i].strip() == '':
+                        tips_i += 1
+                    try:
+                        blank_ans = tips[tips_i]
+                    except:
+                        blank_ans = '未找到提示'
+                    print('-->    第{0}空答案可能是： {1}'.format(i + 1, blank_ans))
+                    blanks[i].send_keys(blank_ans)
+                    tips_i += 1
 
                 time.sleep(round(random.uniform(0.5, 2), 2))
                 okBtn.click()
@@ -197,7 +207,7 @@ def run_exam(browser):
             try:
                 submit = browser.find_element_by_class_name('submit-btn')
                 submit.click()
-                time.sleep(round(random.uniform(0.5, 2), 2))
+                time.sleep(round(random.uniform(1.6, 3.6), 2))
             except selenium.common.exceptions.NoSuchElementException:
                 pass
             print('--> 答题结束')
