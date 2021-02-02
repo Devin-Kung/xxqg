@@ -80,8 +80,6 @@ def select_all(options):
 
 
 def run_exam(browser):
-    url = 'https://pc.xuexi.cn/points/exam-practice.html'
-    browser.get(url)
     while True:
         content = browser.find_element_by_class_name('ant-breadcrumb')
         browser.execute_script('arguments[0].scrollIntoView();', content)
