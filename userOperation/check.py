@@ -36,6 +36,11 @@ def check_task(browser):
     # print(settings)
     settings = json.loads(settings)
 
+    exam_temp_Path = './data/exam_temp.json'
+    with open(exam_temp_Path, 'r', encoding='utf-8') as f:
+        exam_temp = f.read()
+    exam_temp = json.loads(exam_temp)
+
     res = CheckResType.NULL
     browser.get('https://www.xuexi.cn/index.html')
     time.sleep(round(random.uniform(1, 3), 2))
@@ -48,13 +53,15 @@ def check_task(browser):
     tableRow.append(login.text.strip())
 
     # 选读文章积分
-    article = browser.find_element_by_xpath('/html/body/div[1]/div/div[2]/div/div[3]/div[2]/div[2]/div[3]/div[1]/div[2]')
+    article = browser.find_element_by_xpath(
+        '/html/body/div[1]/div/div[2]/div/div[3]/div[2]/div[2]/div[3]/div[1]/div[2]')
     tableRow.append(article.text.strip())
     # 视听学习积分
     video = browser.find_element_by_xpath('/html/body/div[1]/div/div[2]/div/div[3]/div[2]/div[3]/div[2]/div[1]/div[2]')
     tableRow.append(video.text.strip())
     # 视听学习时长积分
-    video_time = browser.find_element_by_xpath('/html/body/div[1]/div/div[2]/div/div[3]/div[2]/div[4]/div[2]/div[1]/div[2]')
+    video_time = browser.find_element_by_xpath(
+        '/html/body/div[1]/div/div[2]/div/div[3]/div[2]/div[4]/div[2]/div[1]/div[2]')
     tableRow.append(video_time.text.strip())
     # 每日答题积分
     daily = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[3]/div[2]/div[5]/div[2]/div[1]/div[2]')
@@ -98,11 +105,9 @@ def check_task(browser):
 
     if settings['每日答题'] == 'true' and res == CheckResType.NULL and daily.text != '5分/5分':
         res = CheckResType.DAILY_EXAM
-    if settings['每周答题'] == 'true' and res == CheckResType.NULL and weekly.text != '5分/5分':
+    if exam_temp['WEEKLY_EXAM'] == 'true' and settings['每周答题'] == 'true' and res == CheckResType.NULL and weekly.text != '5分/5分':
         res = CheckResType.WEEKLY_EXAM
-    if settings['专项答题'] == 'true' and res == CheckResType.NULL and special.text != '10分/10分':
+    if exam_temp['SPECIAL_EXAM'] == 'true' and settings['专项答题'] == 'true' and res == CheckResType.NULL and special.text != '10分/10分':
         res = CheckResType.SPECIAL_EXAM
 
     return res
-
-

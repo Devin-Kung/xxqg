@@ -43,7 +43,8 @@
 <img src="https://github.com/PRaichu/xxqg/blob/master/%E6%95%88%E6%9E%9C%E5%9B%BE3.png?raw=true" alt="结束效果图" style="zoom: 80%;" />
 
 # 项目结构树
-```
+
+```text
 │  xuexi.py
 │  xxqg.ico
 │  __init__.py

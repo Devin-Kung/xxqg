@@ -1,12 +1,9 @@
 # -*- encoding: utf-8 -*-
+import json
 import subprocess
-from getData import get_article
-from getData import get_video
-from operation import scan_article
-from operation import watch_video
-from operation import exam
-from userOperation import login
-from userOperation import check
+from getData import get_article, get_video
+from operation import scan_article, watch_video, exam
+from userOperation import login, check
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import random
@@ -14,7 +11,7 @@ import random
 
 def article_or_video():
     """
-    伪随机，浏览文章或视频
+    伪随机(在随机浏览文章或视频的情况下，保证文章或视频不会连续2次以上重复出现)，浏览文章或视频
     :return: 1(文章)或2(视频)
     """
     rand = random.randint(1, 2)
@@ -56,6 +53,7 @@ def run():
 
 def finally_run():
     browser.quit()
+
     print(r'''
       __/\\\\\\\\\\\\\____/\\\________/\\\__________/\\\\\\\\\\\\__/\\\\\\\\\\\\_____/\\\\\\\\\\\\\\\_        
        _\/\\\/////////\\\_\///\\\____/\\\/_________/\\\//////////__\/\\\////////\\\__\/\\\///////////__       
@@ -79,7 +77,15 @@ if __name__ == "__main__":
     browser = webdriver.Chrome(options=chrome_options)
     browser.maximize_window()
 
+    exam_temp_Path = './data/exam_temp.json'
     try:
+        with open(exam_temp_Path, 'w', encoding='utf-8') as f:
+            dataDict = {
+                'WEEKLY_EXAM': 'true',
+                'SPECIAL_EXAM': 'true'
+            }
+            f.write(json.dumps(dataDict, ensure_ascii=False, indent=4))
+
         get_article.get_article()
         get_video.get_video()
         user_login()
@@ -90,4 +96,6 @@ if __name__ == "__main__":
         print(e)
         print('--> 程序异常，请尝试重启脚本')
     finally:
+        import os
+        os.remove(exam_temp_Path)
         finally_run()

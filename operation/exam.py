@@ -1,3 +1,4 @@
+import json
 import selenium
 from selenium.common.exceptions import WebDriverException
 import time
@@ -9,31 +10,43 @@ from userOperation import check
 
 def check_exam(browser, examType):
     """
-    检查可做的题目
+    检查可做的题目，如果本页没有则翻页查找
     :param browser: browser
     :param examType: 题目类型(周、专)
     :return: null
     """
     time.sleep(round(random.uniform(1, 2), 2))
-    allExams = browser.find_elements_by_class_name('ant-btn-primary')
     while True:
-        flag = True
+        flag = True  # 用来记录是否答题，答题则置为False
+        allExams = browser.find_elements_by_class_name('ant-btn-primary')
         for exam in allExams:
             if exam.text == '开始答题' or exam.text == '继续答题':
                 browser.execute_script('arguments[0].scrollIntoView();', exam)
                 time.sleep(round(random.uniform(1, 2), 2))
                 exam.click()
+                time.sleep(round(random.uniform(2, 4), 2))
+                run_exam(browser)
                 flag = False
                 break
-        if flag:
+        if flag:  # flag为True则执行翻页
             nextPage = browser.find_element_by_class_name('ant-pagination-next')
             browser.execute_script('arguments[0].scrollIntoView();', nextPage)
             time.sleep(round(random.uniform(1, 2), 2))
-            if nextPage.get_attribute('aria-disabled') == 'true':
+            if nextPage.get_attribute('aria-disabled') == 'true':  # 检查翻页按钮是否可点击
+                exam_type = None
                 if examType == check.CheckResType.WEEKLY_EXAM:
+                    exam_type = 'WEEKLY_EXAM'
                     print('--> 每周答题：已无可做题目')
                 elif examType == check.CheckResType.SPECIAL_EXAM:
+                    exam_type = 'SPECIAL_EXAM'
                     print('--> 专项答题：已无可做题目')
+                # 如果该类型的题目已全部做完，则记录防止再次刷
+                exam_temp_Path = './data/exam_temp.json'
+                with open(exam_temp_Path, 'r', encoding='utf-8') as f:
+                    dataDict = json.loads(f.read())
+                    dataDict[exam_type] = 'false'
+                with open(exam_temp_Path, 'w', encoding='utf-8') as f:
+                    f.write(json.dumps(dataDict, ensure_ascii=False, indent=4))
                 return
             nextPage.click()
             time.sleep(round(random.uniform(3, 5), 2))
@@ -42,6 +55,12 @@ def check_exam(browser, examType):
 
 
 def to_exam(browser, examType):
+    """
+    根据参数题目类型进入对应的题目
+    :param browser: browser
+    :param examType: 题目类型(日、周、专)
+    :return:
+    """
     browser.get('https://www.xuexi.cn/')
     time.sleep(round(random.uniform(1, 2), 2))
     browser.get('https://pc.xuexi.cn/points/my-points.html')
@@ -52,6 +71,8 @@ def to_exam(browser, examType):
         browser.execute_script('arguments[0].scrollIntoView();', daily)
         time.sleep(round(random.uniform(1, 2), 2))
         daily.click()
+        time.sleep(round(random.uniform(2, 4), 2))
+        run_exam(browser)
     elif examType == check.CheckResType.WEEKLY_EXAM:
         weekly = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[3]/div[2]/div[6]/div[2]/div[2]/div')
         browser.execute_script('arguments[0].scrollIntoView();', weekly)
@@ -64,9 +85,6 @@ def to_exam(browser, examType):
         time.sleep(round(random.uniform(1, 2), 2))
         special.click()
         check_exam(browser, examType)
-
-    time.sleep(round(random.uniform(2, 4), 2))
-    run_exam(browser)
 
 
 def select_all(options):
