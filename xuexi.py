@@ -24,14 +24,19 @@ def article_or_video():
 
 
 def user_login():
+    """
+    登录，循环执行，直到登录成功
+    :return:
+    """
     while not login.login(browser):
-        print('--> 登录超时，已重新获取登录二维码')
+        print('--> 登录超时，正在尝试重新登录')
         continue
 
 
 def run():
     """
     刷视频，刷题目主要部分
+    通过check_task()函数决定应该执行什么任务，并调用相应任务函数
     :return: null
     """
     while True:
@@ -52,6 +57,15 @@ def run():
 
 
 def finally_run():
+    """
+    程序最后执行的函数，包括储存cookies，关闭浏览器等
+    :return: null
+    """
+    # 获取cookies并保存
+    jsonCookies = json.dumps(browser.get_cookies())
+    with open('data/cookies.json', 'w') as f:
+        f.write(jsonCookies)
+
     browser.quit()
 
     print(r'''
@@ -81,6 +95,7 @@ if __name__ == "__main__":
     try:
         with open(exam_temp_Path, 'w', encoding='utf-8') as f:
             dataDict = {
+                'DAILY_EXAM': 'true',
                 'WEEKLY_EXAM': 'true',
                 'SPECIAL_EXAM': 'true'
             }
