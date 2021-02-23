@@ -5,6 +5,7 @@ from enum import Enum
 from selenium import webdriver
 from rich import print
 from rich.table import Column, Table
+from datetime import datetime
 
 
 class CheckResType(Enum):
@@ -18,6 +19,11 @@ class CheckResType(Enum):
 
 
 def check_task(browser):
+    """
+    检查任务项并返回给主程序
+    :param browser: browser
+    :return: CheckResType：任务类型
+    """
     # table = PrettyTable(["每日登录", "选读文章", "视频数量", "视频时长", "每日答题", "每周答题", "专项答题", "今日累计积分", "成长总积分"])
     table = Table(show_header=True, header_style="bold black")
     table.add_column("每日登录", justify='center')
@@ -103,11 +109,15 @@ def check_task(browser):
     if settings['自动答题'] != 'true':
         return res
 
+    dayOfWeek = str(datetime.now().isoweekday())
     if settings['每日答题'] == 'true' and res == CheckResType.NULL and daily.text != '5分/5分':
-        res = CheckResType.DAILY_EXAM
+        if settings['答题时间设置']['是否启用(关闭则每天都答题)'] != 'true' or (settings['答题时间设置']['是否启用(关闭则每天都答题)'] == 'true' and dayOfWeek in settings['答题时间设置']['答题类型(数字代表星期几)']['每日答题']):
+            res = CheckResType.DAILY_EXAM
     if exam_temp['WEEKLY_EXAM'] == 'true' and settings['每周答题'] == 'true' and res == CheckResType.NULL and weekly.text != '5分/5分':
-        res = CheckResType.WEEKLY_EXAM
+        if settings['答题时间设置']['是否启用(关闭则每天都答题)'] != 'true' or (settings['答题时间设置']['是否启用(关闭则每天都答题)'] == 'true' and dayOfWeek in settings['答题时间设置']['答题类型(数字代表星期几)']['每周答题']):
+            res = CheckResType.WEEKLY_EXAM
     if exam_temp['SPECIAL_EXAM'] == 'true' and settings['专项答题'] == 'true' and res == CheckResType.NULL and special.text != '10分/10分':
-        res = CheckResType.SPECIAL_EXAM
+        if settings['答题时间设置']['是否启用(关闭则每天都答题)'] != 'true' or (settings['答题时间设置']['是否启用(关闭则每天都答题)'] == 'true' and dayOfWeek in settings['答题时间设置']['答题类型(数字代表星期几)']['专项答题']):
+            res = CheckResType.SPECIAL_EXAM
 
     return res
