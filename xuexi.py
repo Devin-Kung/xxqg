@@ -1,12 +1,13 @@
 # -*- encoding: utf-8 -*-
-import json
-import subprocess
+from json import dumps
+from subprocess import call
+from traceback import format_exc
 from getData import get_article, get_video
-from operation import scan_article, watch_video, exam
+from operation import scan_article, watch_video, exam, get_chromedriver
 from userOperation import login, check
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-import random
+from random import randint
 
 
 def article_or_video():
@@ -14,7 +15,7 @@ def article_or_video():
     伪随机(在随机浏览文章或视频的情况下，保证文章或视频不会连续2次以上重复出现)，浏览文章或视频
     :return: 1(文章)或2(视频)
     """
-    rand = random.randint(1, 2)
+    rand = randint(1, 2)
     if len(randArr) >= 2 and randArr[len(randArr) - 1] + randArr[len(randArr) - 2] == 2:
         rand = 2
     elif len(randArr) >= 2 and randArr[len(randArr) - 1] + randArr[len(randArr) - 2] == 4:
@@ -58,14 +59,8 @@ def run():
 
 def finally_run():
     """
-    程序最后执行的函数，包括储存cookies，关闭浏览器等
-    :return: null
+    程序最后执行的函数，包括打印信息、关闭浏览器等
     """
-    # 获取cookies并保存
-    jsonCookies = json.dumps(browser.get_cookies())
-    with open('data/cookies.json', 'w') as f:
-        f.write(jsonCookies)
-
     browser.quit()
 
     print(r'''
@@ -79,15 +74,26 @@ def finally_run():
              _\/\\\\\\\\\\\\\/________\/\\\____________\//\\\\\\\\\\\\/__\/\\\\\\\\\\\\/___\/\\\_____________ 
               _\/////////////__________\///______________\////////////____\////////////_____\///______________ 
             ''')
-    subprocess.call('pause', shell=True)
+    call('pause', shell=True)
 
 
 if __name__ == "__main__":
+    import os
+    if not get_chromedriver.do(os.getcwd()):
+        import sys
+        sys.exit(1)
+
     chrome_options = Options()
+    # 防止检测
+    chrome_options.add_experimental_option('excludeSwitches', ['enable-automation'])
+    chrome_options.add_experimental_option('useAutomationExtension', False)
+
     chrome_options.add_argument("--mute-audio")  # 静音
     chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])  # 禁止打印日志
     chrome_options.add_argument('--ignore-certificate-errors')  # 忽略证书错误
     chrome_options.add_argument('--ignore-ssl-errors')  # 忽略ssl错误
+    chrome_options.add_argument('–log-level=3')
+
     browser = webdriver.Chrome(options=chrome_options)
     browser.maximize_window()
 
@@ -99,7 +105,7 @@ if __name__ == "__main__":
                 'WEEKLY_EXAM': 'true',
                 'SPECIAL_EXAM': 'true'
             }
-            f.write(json.dumps(dataDict, ensure_ascii=False, indent=4))
+            f.write(dumps(dataDict, ensure_ascii=False, indent=4))
 
         get_article.get_article()
         get_video.get_video()
@@ -107,10 +113,9 @@ if __name__ == "__main__":
         randArr = []  # 存放并用于判断随机值，防止出现连续看文章或者看视频的情况
         run()
         print('--> 任务全部完成，程序已结束')
-    except BaseException as e:
-        print(e)
+    except:
+        print(str(format_exc()))
         print('--> 程序异常，请尝试重启脚本')
     finally:
-        import os
         os.remove(exam_temp_Path)
         finally_run()

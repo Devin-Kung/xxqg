@@ -1,6 +1,6 @@
 from getData import dataTimeOperation
-import requests
-import json
+from requests import get
+from json import loads, dumps
 
 
 def get_article():
@@ -15,9 +15,9 @@ def get_article():
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"
     }
 
-    articles = requests.get(url='https://www.xuexi.cn/lgdata/u1ght1omn2.json', headers=headers)
+    articles = get(url='https://www.xuexi.cn/lgdata/u1ght1omn2.json', headers=headers)
     with open('./data/articles.json', 'w', encoding='utf-8') as f:
-        f.write(json.dumps(json.loads(articles.content), ensure_ascii=False, indent=4))
+        f.write(dumps(loads(articles.content), ensure_ascii=False, indent=4))
     dataTimeOperation.set_time('articles')
     print('--> 文章数据更新成功')
 
