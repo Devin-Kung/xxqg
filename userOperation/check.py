@@ -1,10 +1,9 @@
-import time
-import random
-import json
+from time import sleep
+from random import uniform
+from json import loads
 from enum import Enum
-from selenium import webdriver
 from rich import print
-from rich.table import Column, Table
+from rich.table import Table
 from datetime import datetime
 
 
@@ -39,45 +38,25 @@ def check_task(browser):
     settingsPath = 'data/settings.json'
     with open(settingsPath, 'r', encoding='utf-8') as f:
         settings = f.read()
-    # print(settings)
-    settings = json.loads(settings)
+    settings = loads(settings)
 
     exam_temp_Path = './data/exam_temp.json'
     with open(exam_temp_Path, 'r', encoding='utf-8') as f:
         exam_temp = f.read()
-    exam_temp = json.loads(exam_temp)
+    exam_temp = loads(exam_temp)
 
     res = CheckResType.NULL
     browser.get('https://www.xuexi.cn/index.html')
-    time.sleep(round(random.uniform(1, 3), 2))
+    sleep(round(uniform(1, 3), 2))
     browser.get('https://pc.xuexi.cn/points/my-points.html')
     browser.implicitly_wait(3)
-    time.sleep(round(random.uniform(1, 3), 2))
+    sleep(round(uniform(1, 3), 2))
 
-    # 每日登录积分
-    login = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[3]/div[2]/div[1]/div[2]/div[1]/div[2]')
-    tableRow.append(login.text.strip())
+    # 获取各任务项积分
+    scores = browser.find_elements_by_class_name('my-points-card-text')
+    for score in scores:
+        tableRow.append(score.text.strip())
 
-    # 选读文章积分
-    article = browser.find_element_by_xpath(
-        '/html/body/div[1]/div/div[2]/div/div[3]/div[2]/div[2]/div[3]/div[1]/div[2]')
-    tableRow.append(article.text.strip())
-    # 视听学习积分
-    video = browser.find_element_by_xpath('/html/body/div[1]/div/div[2]/div/div[3]/div[2]/div[3]/div[2]/div[1]/div[2]')
-    tableRow.append(video.text.strip())
-    # 视听学习时长积分
-    video_time = browser.find_element_by_xpath(
-        '/html/body/div[1]/div/div[2]/div/div[3]/div[2]/div[4]/div[2]/div[1]/div[2]')
-    tableRow.append(video_time.text.strip())
-    # 每日答题积分
-    daily = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[3]/div[2]/div[5]/div[2]/div[1]/div[2]')
-    tableRow.append(daily.text.strip())
-    # 每周答题积分
-    weekly = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[3]/div[2]/div[6]/div[2]/div[1]/div[2]')
-    tableRow.append(weekly.text.strip())
-    # 专项答题积分
-    special = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[3]/div[2]/div[7]/div[2]/div[1]/div[2]')
-    tableRow.append(special.text.strip())
     # 今日积分
     todayPoints = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[2]/div[2]/span[3]')
     tableRow.append(todayPoints.text.strip())
@@ -97,9 +76,9 @@ def check_task(browser):
                   tableRow[8] + '分')
     print(table)
 
-    if settings['浏览文章'] == "true" and article.text != '12分/12分':
+    if settings['浏览文章'] == "true" and scores[1].text != '12分/12分':
         res = CheckResType.ARTICLE
-    if settings['观看视频'] == "true" and (video.text != '6分/6分' or video_time.text != '6分/6分'):
+    if settings['观看视频'] == "true" and (scores[2].text != '6分/6分' or scores[3].text != '6分/6分'):
         if res == CheckResType.ARTICLE:
             res = CheckResType.ARTICLE_AND_VIDEO
         else:
@@ -110,13 +89,13 @@ def check_task(browser):
         return res
 
     dayOfWeek = str(datetime.now().isoweekday())
-    if settings['每日答题'] == 'true' and res == CheckResType.NULL and daily.text != '5分/5分':
+    if settings['每日答题'] == 'true' and res == CheckResType.NULL and scores[4].text != '5分/5分':
         if settings['答题时间设置']['是否启用(关闭则每天都答题)'] != 'true' or (settings['答题时间设置']['是否启用(关闭则每天都答题)'] == 'true' and dayOfWeek in settings['答题时间设置']['答题类型(数字代表星期几)']['每日答题']):
             res = CheckResType.DAILY_EXAM
-    if exam_temp['WEEKLY_EXAM'] == 'true' and settings['每周答题'] == 'true' and res == CheckResType.NULL and weekly.text != '5分/5分':
+    if exam_temp['WEEKLY_EXAM'] == 'true' and settings['每周答题'] == 'true' and res == CheckResType.NULL and scores[5].text != '5分/5分':
         if settings['答题时间设置']['是否启用(关闭则每天都答题)'] != 'true' or (settings['答题时间设置']['是否启用(关闭则每天都答题)'] == 'true' and dayOfWeek in settings['答题时间设置']['答题类型(数字代表星期几)']['每周答题']):
             res = CheckResType.WEEKLY_EXAM
-    if exam_temp['SPECIAL_EXAM'] == 'true' and settings['专项答题'] == 'true' and res == CheckResType.NULL and special.text != '10分/10分':
+    if exam_temp['SPECIAL_EXAM'] == 'true' and settings['专项答题'] == 'true' and res == CheckResType.NULL and scores[6].text != '10分/10分':
         if settings['答题时间设置']['是否启用(关闭则每天都答题)'] != 'true' or (settings['答题时间设置']['是否启用(关闭则每天都答题)'] == 'true' and dayOfWeek in settings['答题时间设置']['答题类型(数字代表星期几)']['专项答题']):
             res = CheckResType.SPECIAL_EXAM
 
