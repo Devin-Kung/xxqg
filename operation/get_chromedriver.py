@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from requests import get
 from re import compile
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, call
 from traceback import format_exc
 from zipfile import ZipFile
 
@@ -20,7 +20,8 @@ def do(program_path):
         return True
     except:
         print(str(format_exc()))
-        print('--> 程序异常，请尝试重启脚本')
+        print('--> 程序异常，请确保你的chrome浏览器是最新版本，然后重启脚本')
+        call('pause', shell=True)
         return False
 
 
