@@ -94,7 +94,7 @@ if __name__ == "__main__":
     chrome_options.add_argument('--ignore-ssl-errors')  # 忽略ssl错误
     chrome_options.add_argument('–log-level=3')
 
-    browser = webdriver.Chrome(options=chrome_options)
+    browser = webdriver.Chrome(os.path.join(os.getcwd(), 'chromedriver.exe'), options=chrome_options)
     browser.maximize_window()
 
     exam_temp_Path = './data/exam_temp.json'
