@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 from getData import dataTimeOperation
 from requests import get
 from json import loads, dumps

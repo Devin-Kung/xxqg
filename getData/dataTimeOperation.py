@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 from time import localtime, strptime, strftime, time
 from datetime import datetime
 from json import loads, dumps

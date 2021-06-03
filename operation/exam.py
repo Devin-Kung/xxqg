@@ -1,6 +1,7 @@
+# -*- encoding: utf-8 -*-
 from json import loads, dumps
 from traceback import format_exc
-from selenium.common.exceptions import WebDriverException, NoSuchElementException
+from selenium.common.exceptions import WebDriverException, NoSuchElementException, UnexpectedAlertPresentException
 from time import sleep
 from random import uniform
 from difflib import SequenceMatcher
@@ -211,7 +212,12 @@ def run_exam(browser):
                 sleep(round(uniform(0.5, 2), 2))
                 okBtn.click()
             # print()
-
+        except UnexpectedAlertPresentException:
+            alert = browser.switch_to.alert
+            alert.accept()
+            otherPlace = browser.find_element_by_id('app')
+            otherPlace.click()
+            sleep(round(uniform(0.5, 2), 2))
         except WebDriverException:
             print(str(format_exc()))
             print('--> 答题异常，正在重试')
@@ -224,8 +230,10 @@ def run_exam(browser):
                 submit = browser.find_element_by_class_name('submit-btn')
                 submit.click()
                 sleep(round(uniform(1.6, 3.6), 2))
+            except UnexpectedAlertPresentException:
+                alert = browser.switch_to.alert
+                alert.accept()
             except NoSuchElementException:
                 pass
             print('--> 答题结束')
             break
-
