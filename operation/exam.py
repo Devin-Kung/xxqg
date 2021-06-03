@@ -227,9 +227,10 @@ def run_exam(browser):
 
         if questionIndex == questionCount:
             try:
+                sleep(round(uniform(1.6, 2.6), 2))
                 submit = browser.find_element_by_class_name('submit-btn')
                 submit.click()
-                sleep(round(uniform(1.6, 3.6), 2))
+                sleep(round(uniform(2.6, 4.6), 2))
             except UnexpectedAlertPresentException:
                 alert = browser.switch_to.alert
                 alert.accept()
