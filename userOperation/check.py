@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 from time import sleep
 from random import uniform
 from json import loads
