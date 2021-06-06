@@ -81,61 +81,68 @@ def finally_run():
 
 
 if __name__ == "__main__":
-    from sys import exit
-    import ctypes
-    from os import getcwd, remove, path
-
-    ctypes.windll.kernel32.SetConsoleTitleW('xuexi-{}'.format(VERSION))
-
     try:
-        check_version.check()
-    except (SSLEOFError, MaxRetryError, SSLError):
-        print(str(format_exc()))
-        print('--> \033[31m网络连接失败，请检查是否开启了VPN或代理软件，如果开启了请关闭后再试\033[0m')
-        print('--> \033[31m当前版本:{}\033[0m'.format(VERSION))
-        call('pause', shell=True)
-        exit(1)
+        from sys import exit
+        import ctypes
+        from os import getcwd, remove, path
 
-    if not get_chromedriver.do(getcwd()):
-        exit(1)
+        ctypes.windll.kernel32.SetConsoleTitleW('xuexi-{}'.format(VERSION))
 
-    chrome_options = webdriver.ChromeOptions()
+        try:
+            check_version.check()
+        except (SSLEOFError, MaxRetryError, SSLError):
+            print(str(format_exc()))
+            print('--> \033[31m网络连接失败，请检查是否开启了VPN或代理软件，如果开启了请关闭后再试\033[0m')
+            print('--> \033[31m当前版本:{}\033[0m'.format(VERSION))
+            call('pause', shell=True)
+            exit(1)
 
-    chrome_options.add_experimental_option('useAutomationExtension', False)     # 防止检测
-    chrome_options.add_argument("--mute-audio")  # 静音
-    chrome_options.add_experimental_option('excludeSwitches', ['enable-automation', 'enable-logging'])  # 防止检测、禁止打印日志
-    chrome_options.add_argument('--disable-blink-features=AutomationControlled')
-    chrome_options.add_argument('--ignore-certificate-errors')  # 忽略证书错误
-    chrome_options.add_argument('--ignore-ssl-errors')  # 忽略ssl错误
-    chrome_options.add_argument('–log-level=3')
+        if not get_chromedriver.do(getcwd()):
+            exit(1)
 
-    browser = XuexiChrome(path.join(getcwd(), 'chromedriver.exe'), options=chrome_options)
-    browser.maximize_window()
+        chrome_options = webdriver.ChromeOptions()
 
-    exam_temp_Path = './data/exam_temp.json'
-    try:
-        with open(exam_temp_Path, 'w', encoding='utf-8') as f:
-            dataDict = {
-                'DAILY_EXAM': 'true',
-                'WEEKLY_EXAM': 'true',
-                'SPECIAL_EXAM': 'true'
-            }
-            f.write(dumps(dataDict, ensure_ascii=False, indent=4))
+        chrome_options.add_experimental_option('useAutomationExtension', False)     # 防止检测
+        chrome_options.add_argument("--mute-audio")  # 静音
+        chrome_options.add_experimental_option('excludeSwitches', ['enable-automation', 'enable-logging'])  # 防止检测、禁止打印日志
+        chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+        chrome_options.add_argument('--ignore-certificate-errors')  # 忽略证书错误
+        chrome_options.add_argument('--ignore-ssl-errors')  # 忽略ssl错误
+        chrome_options.add_argument('–log-level=3')
 
-        get_article.get_article()
-        get_video.get_video()
-        user_login()
-        randArr = []  # 存放并用于判断随机值，防止出现连续看文章或者看视频的情况
-        run()
-        print('--> 任务全部完成，程序已结束')
-    except (SSLEOFError, MaxRetryError, SSLError):
-        print(str(format_exc()))
-        print('--> \033[31m网络连接失败，请检查是否开启了VPN或代理软件，如果开启了请关闭后再试\033[0m')
-        print('--> \033[31m当前版本:{}\033[0m'.format(VERSION))
+        browser = XuexiChrome(path.join(getcwd(), 'chromedriver.exe'), options=chrome_options)
+        browser.maximize_window()
+
+        exam_temp_Path = './data/exam_temp.json'
     except:
         print(str(format_exc()))
         print('--> \033[31m程序异常，请尝试重启脚本\033[0m')
         print('--> \033[31m当前版本:{}\033[0m'.format(VERSION))
-    finally:
-        remove(exam_temp_Path)
         finally_run()
+    else:
+        try:
+            with open(exam_temp_Path, 'w', encoding='utf-8') as f:
+                dataDict = {
+                    'DAILY_EXAM': 'true',
+                    'WEEKLY_EXAM': 'true',
+                    'SPECIAL_EXAM': 'true'
+                }
+                f.write(dumps(dataDict, ensure_ascii=False, indent=4))
+
+            get_article.get_article()
+            get_video.get_video()
+            user_login()
+            randArr = []  # 存放并用于判断随机值，防止出现连续看文章或者看视频的情况
+            run()
+            print('--> 任务全部完成，程序已结束')
+        except (SSLEOFError, MaxRetryError, SSLError):
+            print(str(format_exc()))
+            print('--> \033[31m网络连接失败，请检查是否开启了VPN或代理软件，如果开启了请关闭后再试\033[0m')
+            print('--> \033[31m当前版本:{}\033[0m'.format(VERSION))
+        except:
+            print(str(format_exc()))
+            print('--> \033[31m程序异常，请尝试重启脚本\033[0m')
+            print('--> \033[31m当前版本:{}\033[0m'.format(VERSION))
+        finally:
+            remove(exam_temp_Path)
+            finally_run()
