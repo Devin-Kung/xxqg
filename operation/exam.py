@@ -6,7 +6,23 @@ from time import sleep
 from random import uniform
 from difflib import SequenceMatcher
 from re import findall
+from selenium.webdriver.remote.webelement import WebElement
+from custom.xuexi_chrome import XuexiChrome
 from userOperation import check
+
+
+def click(browser: XuexiChrome, element: WebElement):
+    browser.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
+        'source': '''
+                Object.defineProperty(navigator, 'webdriver', {
+                    get: () => undefined
+                })
+                window.alert = function() {
+                    return;
+                }
+              '''
+    })
+    element.click()
 
 
 def check_exam(browser, examType):
@@ -24,7 +40,7 @@ def check_exam(browser, examType):
             if exam.text == '开始答题' or exam.text == '继续答题':
                 browser.execute_script('arguments[0].scrollIntoView();', exam)
                 sleep(round(uniform(1, 2), 2))
-                exam.click()
+                click(browser, exam)
                 sleep(round(uniform(2, 4), 2))
                 run_exam(browser)
                 flag = False
@@ -49,42 +65,41 @@ def check_exam(browser, examType):
                 with open(exam_temp_Path, 'w', encoding='utf-8') as f:
                     f.write(dumps(dataDict, ensure_ascii=False, indent=4))
                 return
-            nextPage.click()
+            click(browser, nextPage)
             sleep(round(uniform(3, 5), 2))
         else:
             break
 
 
-def to_exam(browser, examType):
+def to_exam(browser: XuexiChrome, examType: check.CheckResType):
     """
     根据参数题目类型进入对应的题目
     :param browser: browser
     :param examType: 题目类型(日、周、专)
     :return:
     """
-    browser.get('https://www.xuexi.cn/')
-    sleep(round(uniform(1, 2), 2))
-    browser.get('https://pc.xuexi.cn/points/my-points.html')
+    browser.xuexi_get('https://www.xuexi.cn/')
+    browser.xuexi_get('https://pc.xuexi.cn/points/my-points.html')
     sleep(round(uniform(1, 2), 2))
 
     if examType == check.CheckResType.DAILY_EXAM:
         daily = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[3]/div[2]/div[5]/div[2]/div[2]/div')
         browser.execute_script('arguments[0].scrollIntoView();', daily)
         sleep(round(uniform(1, 2), 2))
-        daily.click()
+        click(browser, daily)
         sleep(round(uniform(2, 4), 2))
         run_exam(browser)
     elif examType == check.CheckResType.WEEKLY_EXAM:
         weekly = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[3]/div[2]/div[6]/div[2]/div[2]/div')
         browser.execute_script('arguments[0].scrollIntoView();', weekly)
         sleep(round(uniform(1, 2), 2))
-        weekly.click()
+        click(browser, weekly)
         check_exam(browser, examType)
     elif examType == check.CheckResType.SPECIAL_EXAM:
         special = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[3]/div[2]/div[7]/div[2]/div[2]/div')
         browser.execute_script('arguments[0].scrollIntoView();', special)
         sleep(round(uniform(1, 2), 2))
-        special.click()
+        click(browser, special)
         check_exam(browser, examType)
 
 
@@ -94,7 +109,7 @@ def select_all(options):
         print(' ' + options[i].text[0], end='')
     print()
     for i in range(len(options)):
-        sleep(round(uniform(0.5, 1.5), 2))
+        sleep(round(uniform(0.2, 0.8), 2))
         options[i].click()
 
 
@@ -116,7 +131,7 @@ def run_exam(browser):
             browser.find_element_by_class_name('answer')
             if okBtn.text == '下一题':
                 okBtn.click()
-                sleep(round(uniform(2, 3), 2))
+                sleep(round(uniform(0.2, 0.8), 2))
                 continue
         except NoSuchElementException:
             pass
@@ -124,11 +139,11 @@ def run_exam(browser):
         tipBtn = browser.find_element_by_class_name('tips')
         print('--> 当前题目进度：' + str(questionIndex) + '/' + str(questionCount))
         tipBtn.click()
-        sleep(round(uniform(0.5, 1.5), 2))
+        sleep(round(uniform(0.2, 0.8), 2))
         try:
             # 获取所有提示内容
             tipsContent = browser.find_element_by_class_name('line-feed').find_elements_by_tag_name('font')
-            sleep(round(uniform(0.5, 1.5), 2))
+            sleep(round(uniform(0.2, 0.8), 2))
             tipBtn.click()
             tips = []
             tips.clear()
@@ -139,7 +154,7 @@ def run_exam(browser):
                 # 选择题，获取所有选项
                 options = browser.find_elements_by_class_name('choosable')
                 if len(tips) == 0:
-                    sleep(round(uniform(0.5, 1.5), 2))
+                    sleep(round(uniform(0.2, 0.8), 2))
                     options[0].click()
                 else:
                     ansDict = {}  # 存放每个选项与提示的相似度
@@ -150,7 +165,7 @@ def run_exam(browser):
                     print('-->    最大概率选项： ' + options[ansDict[0][0]].text[0])
                     options[ansDict[0][0]].click()
 
-                sleep(round(uniform(0.5, 2), 2))
+                sleep(round(uniform(0.2, 0.8), 2))
                 okBtn.click()
 
             elif '多选题' in questionType:
@@ -162,9 +177,9 @@ def run_exam(browser):
                     select_all(options)
                 else:
                     if len(tips) == 0:
-                        sleep(round(uniform(0.5, 1.5), 2))
+                        sleep(round(uniform(0.2, 0.8), 2))
                         options[0].click()
-                        sleep(round(uniform(0.5, 1.5), 2))
+                        sleep(round(uniform(0.2, 0.8), 2))
                         options[1].click()
                     else:
                         # 如果选项数量多于提示数量，则匹配出最可能的选项
@@ -184,13 +199,13 @@ def run_exam(browser):
                                 print(' ' + options[ans[i]].text[0], end='')
                             print()
                             for i in range(len(ans)):
-                                sleep(round(uniform(0.5, 1.5), 2))
+                                sleep(round(uniform(0.2, 0.8), 2))
                                 options[ans[i]].click()
                         # 如果选项数量和提示数量相同或少于提示数量，则全选
                         else:
                             select_all(options)
 
-                sleep(round(uniform(0.5, 2), 2))
+                sleep(round(uniform(0.2, 0.8), 2))
                 okBtn.click()
 
             elif '填空题' in questionType:
@@ -198,7 +213,7 @@ def run_exam(browser):
                 blanks = browser.find_elements_by_class_name('blank')
                 tips_i = 0
                 for i in range(len(blanks)):
-                    sleep(round(uniform(0.5, 1.5), 2))
+                    sleep(round(uniform(0.2, 0.8), 2))
                     if len(tips) > tips_i and tips[tips_i].strip() == '':
                         tips_i += 1
                     try:
@@ -209,32 +224,35 @@ def run_exam(browser):
                     blanks[i].send_keys(blank_ans)
                     tips_i += 1
 
-                sleep(round(uniform(0.5, 2), 2))
+                sleep(round(uniform(0.2, 0.8), 2))
                 okBtn.click()
-            # print()
         except UnexpectedAlertPresentException:
             alert = browser.switch_to.alert
             alert.accept()
             otherPlace = browser.find_element_by_id('app')
             otherPlace.click()
-            sleep(round(uniform(0.5, 2), 2))
+            sleep(round(uniform(0.2, 0.8), 2))
         except WebDriverException:
             print(str(format_exc()))
             print('--> 答题异常，正在重试')
             otherPlace = browser.find_element_by_id('app')
             otherPlace.click()
-            sleep(round(uniform(0.5, 2), 2))
+            sleep(round(uniform(0.2, 0.8), 2))
 
         if questionIndex == questionCount:
+            sleep(round(uniform(0.2, 0.8), 2))
             try:
-                sleep(round(uniform(1.6, 2.6), 2))
                 submit = browser.find_element_by_class_name('submit-btn')
                 submit.click()
+                browser.implicitly_wait(10)
+                sleep(round(uniform(2.6, 4.6), 2))
+            except NoSuchElementException:
+                submit = browser.find_element_by_class_name('ant-btn-primary')
+                submit.click()
+                browser.implicitly_wait(10)
                 sleep(round(uniform(2.6, 4.6), 2))
             except UnexpectedAlertPresentException:
                 alert = browser.switch_to.alert
                 alert.accept()
-            except NoSuchElementException:
-                pass
             print('--> 答题结束')
             break
