@@ -118,7 +118,7 @@ if __name__ == "__main__":
         print(str(format_exc()))
         print('--> \033[31m程序异常，请尝试重启脚本\033[0m')
         print('--> \033[31m当前版本:{}\033[0m'.format(VERSION))
-        finally_run()
+        call('pause', shell=True)
     else:
         try:
             with open(exam_temp_Path, 'w', encoding='utf-8') as f:
