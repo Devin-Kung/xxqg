@@ -3,9 +3,10 @@ from json import loads, dumps
 from time import sleep
 from random import randint, uniform
 from rich.progress import Progress
+from custom.xuexi_chrome import XuexiChrome
 
 
-def scan_article(browser):
+def scan_article(browser: XuexiChrome):
     articlePath = 'data/articles.json'
     with open(articlePath, 'r', encoding='utf-8') as f:
         articles = f.read()
@@ -19,10 +20,8 @@ def scan_article(browser):
         else:
             break
     url = articles[randIndex]['url']
-    browser.get('https://www.xuexi.cn/d184e7597cc0da16f5d9f182907f1200/9a3668c13f6e303932b5e0e100fc248b.html')
-    sleep(round(uniform(1, 3), 2))
-    browser.get(url)
-    sleep(round(uniform(1, 5), 2))
+    browser.xuexi_get('https://www.xuexi.cn/d184e7597cc0da16f5d9f182907f1200/9a3668c13f6e303932b5e0e100fc248b.html')
+    browser.xuexi_get(url)
 
     # 看文章随机65-75秒
     totalTime = randint(65, 75)
