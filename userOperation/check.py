@@ -1,11 +1,10 @@
 # -*- encoding: utf-8 -*-
-from time import sleep
-from random import uniform
 from json import loads
 from enum import Enum
 from rich import print
 from rich.table import Table
 from datetime import datetime
+from custom.xuexi_chrome import XuexiChrome
 
 
 class CheckResType(Enum):
@@ -18,7 +17,7 @@ class CheckResType(Enum):
     SPECIAL_EXAM = 6
 
 
-def check_task(browser):
+def check_task(browser: XuexiChrome):
     """
     检查任务项并返回给主程序
     :param browser: browser
@@ -47,11 +46,8 @@ def check_task(browser):
     exam_temp = loads(exam_temp)
 
     res = CheckResType.NULL
-    browser.get('https://www.xuexi.cn/index.html')
-    sleep(round(uniform(1, 3), 2))
-    browser.get('https://pc.xuexi.cn/points/my-points.html')
-    browser.implicitly_wait(3)
-    sleep(round(uniform(1, 3), 2))
+    browser.xuexi_get('https://www.xuexi.cn/index.html')
+    browser.xuexi_get('https://pc.xuexi.cn/points/my-points.html')
 
     # 获取各任务项积分
     scores = browser.find_elements_by_class_name('my-points-card-text')
