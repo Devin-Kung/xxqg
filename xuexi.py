@@ -6,12 +6,12 @@ from traceback import format_exc
 from requests.exceptions import SSLError
 from urllib3.exceptions import MaxRetryError
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from random import randint
+from custom.xuexi_chrome import XuexiChrome
 from getData import get_article, get_video
 from getData.version import VERSION
-from operation import scan_article, watch_video, exam, get_chromedriver, check_version
 from userOperation import login, check
+from operation import scan_article, watch_video, exam, get_chromedriver, check_version
 
 
 def article_or_video():
@@ -66,7 +66,6 @@ def finally_run():
     程序最后执行的函数，包括打印信息、关闭浏览器等
     """
     browser.quit()
-    print('\033[5;34;46m', end='')
     print(r'''
       __/\\\\\\\\\\\\\____/\\\________/\\\__________/\\\\\\\\\\\\__/\\\\\\\\\\\\_____/\\\\\\\\\\\\\\\_        
        _\/\\\/////////\\\_\///\\\____/\\\/_________/\\\//////////__\/\\\////////\\\__\/\\\///////////__       
@@ -76,8 +75,8 @@ def finally_run():
            _\/\\\_______\/\\\_______\/\\\____________\/\\\_______\/\\\_\/\\\_______\/\\\_\/\\\_____________   
             _\/\\\_______\/\\\_______\/\\\____________\/\\\_______\/\\\_\/\\\_______/\\\__\/\\\_____________  
              _\/\\\\\\\\\\\\\/________\/\\\____________\//\\\\\\\\\\\\/__\/\\\\\\\\\\\\/___\/\\\_____________ 
-              _\/////////////__________\///______________\////////////____\////////////_____\///______________''', end='')
-    print('\033[0m')
+              _\/////////////__________\///______________\////////////____\////////////_____\///______________''')
+
     call('pause', shell=True)
 
 
@@ -100,18 +99,17 @@ if __name__ == "__main__":
     if not get_chromedriver.do(getcwd()):
         exit(1)
 
-    chrome_options = Options()
-    # 防止检测
-    chrome_options.add_experimental_option('excludeSwitches', ['enable-automation'])
-    chrome_options.add_experimental_option('useAutomationExtension', False)
+    chrome_options = webdriver.ChromeOptions()
 
+    chrome_options.add_experimental_option('useAutomationExtension', False)     # 防止检测
     chrome_options.add_argument("--mute-audio")  # 静音
-    chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])  # 禁止打印日志
+    chrome_options.add_experimental_option('excludeSwitches', ['enable-automation', 'enable-logging'])  # 防止检测、禁止打印日志
+    chrome_options.add_argument('--disable-blink-features=AutomationControlled')
     chrome_options.add_argument('--ignore-certificate-errors')  # 忽略证书错误
     chrome_options.add_argument('--ignore-ssl-errors')  # 忽略ssl错误
     chrome_options.add_argument('–log-level=3')
 
-    browser = webdriver.Chrome(path.join(getcwd(), 'chromedriver.exe'), options=chrome_options)
+    browser = XuexiChrome(path.join(getcwd(), 'chromedriver.exe'), options=chrome_options)
     browser.maximize_window()
 
     exam_temp_Path = './data/exam_temp.json'
