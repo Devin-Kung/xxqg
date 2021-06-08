@@ -18,6 +18,10 @@ def get_latest_version():
         print(str(format_exc()))
         print('--> \033[31m请求版本号失败，请检查是否开启了VPN或代理软件，如果开启了请关闭后再试\033[0m')
         return None
+    except:
+        print(str(format_exc()))
+        print('--> \033[31m请求版本号失败\033[0m')
+        return None
 
 
 def check():
