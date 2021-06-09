@@ -17,10 +17,12 @@ def get_latest_version():
     except ValueError:
         print(str(format_exc()))
         print('--> \033[31m请求版本号失败，请检查是否开启了VPN或代理软件，如果开启了请关闭后再试\033[0m')
+        print('--> \033[31m此处报错为版本号请求失败，不会影响程序运行，无需关闭程序\033[0m')
         return None
     except:
         print(str(format_exc()))
-        print('--> \033[31m请求版本号失败\033[0m')
+        print('--> \033[31m请求版本号失败，请检查你的网络环境\033[0m')
+        print('--> \033[31m此处报错为版本号请求失败，不会影响程序运行，无需关闭程序\033[0m')
         return None
 
 
