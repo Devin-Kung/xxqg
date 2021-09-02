@@ -24,9 +24,8 @@ def watch_video(browser: XuexiChrome):
     browser.xuexi_get('https://www.xuexi.cn/0809b8b6ab8a81a4f55ce9cbefa16eff/ae60b027cb83715fd0eeb7bb2527e88b.html')
     browser.xuexi_get('https://www.xuexi.cn/4426aa87b0b64ac671c96379a3a8bd26/db086044562a57b441c24f2af1c8e101.html#t1jk1cdl7l-5')
     browser.xuexi_get(url)
-    video = browser.find_element_by_xpath('/html/body/div/div/section/div/div/div/div/div[2]/section/div/div/div/div/div/div/div/div[1]/div[2]/div/div[1]/div[1]/div/video')
-    start = browser.find_element_by_xpath(
-        '/html/body/div/div/section/div/div/div/div/div[2]/section/div/div/div/div/div/div/div/div[1]/div[2]/div/div[1]/div[1]/div/div[1]')
+    video = browser.find_element_by_tag_name('video')
+    start = browser.find_element_by_class_name('outter')
     sleep(round(uniform(1, 3), 2))
     browser.execute_script('arguments[0].scrollIntoView();', video)
     try:
