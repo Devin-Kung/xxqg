@@ -55,10 +55,10 @@ def check_task(browser: XuexiChrome):
         tableRow.append(score.text.strip())
 
     # 今日积分
-    todayPoints = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[2]/div[2]/span[3]')
+    todayPoints = browser.find_elements_by_class_name('my-points-points')[0]
     tableRow.append(todayPoints.text.strip())
     # 总积分
-    allPoints = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[2]/div[2]/span[1]')
+    allPoints = browser.find_elements_by_class_name('my-points-points')[1]
     tableRow.append(allPoints.text.strip())
 
     # 打印表格

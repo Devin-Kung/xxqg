@@ -25,7 +25,7 @@ def click(browser: XuexiChrome, element: WebElement):
     element.click()
 
 
-def check_exam(browser, examType):
+def check_exam(browser: XuexiChrome, examType):
     """
     检查可做的题目，如果本页没有则翻页查找
     :param browser: browser
@@ -82,21 +82,23 @@ def to_exam(browser: XuexiChrome, examType: check.CheckResType):
     browser.xuexi_get('https://pc.xuexi.cn/points/my-points.html')
     sleep(round(uniform(1, 2), 2))
 
+    # 获取答题按钮族
+    exam = browser.find_elements_by_class_name('big')
     if examType == check.CheckResType.DAILY_EXAM:
-        daily = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[3]/div[2]/div[5]/div[2]/div[2]/div')
+        daily = exam[4]
         browser.execute_script('arguments[0].scrollIntoView();', daily)
         sleep(round(uniform(1, 2), 2))
         click(browser, daily)
         sleep(round(uniform(2, 4), 2))
         run_exam(browser)
     elif examType == check.CheckResType.WEEKLY_EXAM:
-        weekly = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[3]/div[2]/div[6]/div[2]/div[2]/div')
+        weekly = exam[5]
         browser.execute_script('arguments[0].scrollIntoView();', weekly)
         sleep(round(uniform(1, 2), 2))
         click(browser, weekly)
         check_exam(browser, examType)
     elif examType == check.CheckResType.SPECIAL_EXAM:
-        special = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[3]/div[2]/div[7]/div[2]/div[2]/div')
+        special = exam[6]
         browser.execute_script('arguments[0].scrollIntoView();', special)
         sleep(round(uniform(1, 2), 2))
         click(browser, special)
@@ -113,7 +115,7 @@ def select_all(options):
         options[i].click()
 
 
-def run_exam(browser):
+def run_exam(browser: XuexiChrome):
     while True:
         content = browser.find_element_by_class_name('ant-breadcrumb')
         browser.execute_script('arguments[0].scrollIntoView();', content)

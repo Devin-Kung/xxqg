@@ -1,8 +1,9 @@
 # -*- encoding: utf-8 -*-
 from time import sleep
+from custom.xuexi_chrome import XuexiChrome
 
 
-def login(browser):
+def login(browser: XuexiChrome):
     """
     扫码登录流程，将登录的最终结果返回给主程序
     :param browser: browser
@@ -12,9 +13,9 @@ def login(browser):
     sleep(2.5)
     print('--> 请在5分钟内扫码完成登录')
     browser.implicitly_wait(10)
-    iframe = browser.find_element_by_xpath('/html/body/div[1]/div/div[2]/div[2]/div[1]/div/div/div/iframe')
+    iframe = browser.find_element_by_id('ddlogin-iframe')
     browser.switch_to.frame(iframe)
-    login_QR_box = browser.find_element_by_xpath('/html/body/div/div/div[1]')
+    login_QR_box = browser.find_element_by_class_name('login_qrcode_content')
     browser.execute_script('arguments[0].scrollIntoView();', login_QR_box)
 
     for i in range(60):
