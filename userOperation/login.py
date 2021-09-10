@@ -13,10 +13,8 @@ def login(browser: XuexiChrome):
     sleep(2.5)
     print('--> 请在5分钟内扫码完成登录')
     browser.implicitly_wait(10)
-    iframe = browser.find_element_by_id('ddlogin-iframe')
-    browser.switch_to.frame(iframe)
-    login_QR_box = browser.find_element_by_class_name('login_qrcode_content')
-    browser.execute_script('arguments[0].scrollIntoView();', login_QR_box)
+    qglogin = browser.find_element_by_id('qglogin')
+    browser.execute_script('arguments[0].scrollIntoView();', qglogin)
 
     for i in range(60):
         if browser.current_url == 'https://pc.xuexi.cn/points/my-points.html':
