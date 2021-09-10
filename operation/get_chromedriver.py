@@ -4,19 +4,33 @@ from re import compile
 from subprocess import Popen, PIPE, call
 from traceback import format_exc
 from zipfile import ZipFile
+import winreg
+from json import loads
 
 
 def do(program_path):
+    """
+    检测并更新ChromeDriver
+    :param program_path:
+    :return:
+    """
+    settingsPath = 'data/settings.json'
+    with open(settingsPath, 'r', encoding='utf-8') as f:
+        settings = f.read()
+    settings = loads(settings)
+    if settings['自动更新ChromeDriver'] != "true":
+        return True
     try:
-        url = 'http://npm.taobao.org/mirrors/chromedriver/'
-        latest_version = get_latest_version(url)
-        version = get_version(program_path)
-        if version != latest_version:
-            print('--> 当前chromedriver不是最新，准备进行更新')
+        url = 'https://npm.taobao.org/mirrors/chromedriver/'
+        chrome_version = get_chrome_version()   # 当前Chrome版本号(前三位)
+        version = get_version(program_path)     # 当前ChromeDriver版本号(前三位)
+        if chrome_version != version:
+            print('--> 当前ChromeDriver版本号和Chrome浏览器版本号不一致，准备进行更新')
+            latest_version = get_download_version(chrome_version, url)
             download_url = url + latest_version + '/chromedriver_win32.zip'  # 拼接下载链接
             download_chromedriver(download_url)
             unzip_file(program_path)
-            print('--> chromedriver更新成功\n')
+            print('--> ChromeDriver更新成功\n')
         return True
     except:
         print(str(format_exc()))
@@ -25,23 +39,26 @@ def do(program_path):
         return False
 
 
-def get_latest_version(url):
+def get_download_version(current_version, url):
     """
-    查询最新chromedriver版本号
-    :param url: chromedriver链接
-    :return: 版本号
+    根据本地Chrome版本号获取可下载的ChromeDriver版本号
+    :param current_version: 本地Chrome版本号前三位
+    :param url: ChromeDriver链接
+    :return: 完整版本号
     """
     rep = get(url).text
-    time_list = []  # 用来存放版本时间
-    time_version_dict = {}  # 用来存放版本与时间对应关系
+    version_list = []  # 存放版本号
     result = compile(r'\d.*?/</a>.*?Z').findall(rep)  # 匹配文件夹（版本号）和时间
     for i in result:
-        time = i[-24:-1]  # 提取时间
-        version = compile(r'.*?/').findall(i)[0]  # 提取版本号
-        time_version_dict[time] = version  # 构建时间和版本号的对应关系，形成字典
-        time_list.append(time)  # 形成时间列表
-    latest_version = time_version_dict[max(time_list)][:-1]  # 用最大（新）时间去字典中获取最新的版本号
-    return latest_version
+        version = compile(r'.*?/').findall(i)[0][:-1]  # 提取版本号
+        version_list.append(version)
+    version_list.reverse()
+    download_version = version_list[0]
+    for v in version_list:
+        if compile(r'^[1-9]\d*\.\d*.\d*').findall(v)[0] == current_version:
+            download_version = v
+            break
+    return download_version
 
 
 def download_chromedriver(download_url):
@@ -52,18 +69,18 @@ def download_chromedriver(download_url):
     file = get(download_url)
     with open("chromedriver.zip", 'wb') as zip_file:  # 保存文件到脚本所在目录
         zip_file.write(file.content)
-        print('--> chromedriver下载成功')
+        print('--> ChromeDriver下载成功')
 
 
 def get_version(path):
     """
-    获取当前chromedriver版本号
+    获取当前ChromeDriver版本号前三位
     :return:
     """
     import os
     version_info = Popen([os.path.join(path, 'chromedriver.exe'), '--version'], shell=True,
                          stdout=PIPE).stdout.read().decode()
-    return version_info.split(' ')[1]
+    return compile(r'^[1-9]\d*\.\d*.\d*').findall(version_info.split(' ')[1])[0]
 
 
 def unzip_file(path):
@@ -79,3 +96,18 @@ def unzip_file(path):
     import os
     os.remove('chromedriver.zip')
     print('--> 压缩包已删除')
+
+
+def get_chrome_version():
+    """
+    获取当前Chrome浏览器版本号
+    :return: 版本号前三位
+    """
+    version_re = compile(r'^[1-9]\d*\.\d*.\d*')
+    try:
+        # 从注册表中获得版本号
+        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r'Software\Google\Chrome\BLBeacon')
+        version, temp = winreg.QueryValueEx(key, 'version')
+        return version_re.findall(version)[0]  # 返回前3位版本号
+    except WindowsError as e:
+        print('Chrome版本检查失败:{}'.format(e))
