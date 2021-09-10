@@ -13,5 +13,5 @@
       "专项答题": "1,2,3,4,5,6,7"
     }
   },
-  "自动更新ChromeDriver": "false"
+  "自动更新ChromeDriver": "true"
 }
