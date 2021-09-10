@@ -33,8 +33,8 @@ def watch_video(browser: XuexiChrome):
     except BaseException:
         pass
 
-    # 看视频随机65-75秒
-    totalTime = randint(65, 75)
+    # 看视频随机70-75秒
+    totalTime = randint(70, 75)
     print('--> 正在观看：《' + videos[randIndex]['title'] + '》')
     with Progress() as progress:
         task = progress.add_task("--> [red]观看进度：", total=totalTime)

@@ -23,8 +23,8 @@ def scan_article(browser: XuexiChrome):
     browser.xuexi_get('https://www.xuexi.cn/d184e7597cc0da16f5d9f182907f1200/9a3668c13f6e303932b5e0e100fc248b.html')
     browser.xuexi_get(url)
 
-    # 看文章随机65-75秒
-    totalTime = randint(65, 75)
+    # 看文章随机70-75秒
+    totalTime = randint(70, 75)
     print('--> 正在浏览：《' + articles[randIndex]['title'] + '》')
     with Progress() as progress:
         task = progress.add_task("--> [cyan]浏览进度：", total=totalTime)
