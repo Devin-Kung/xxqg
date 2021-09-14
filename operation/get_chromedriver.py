@@ -11,8 +11,8 @@ from json import loads
 def do(program_path):
     """
     检测并更新ChromeDriver
-    :param program_path:
-    :return:
+    :param program_path: ChromeDriver路径（文件夹路径）
+    :return: 执行结果 True：执行成功，False：执行失败
     """
     settingsPath = 'data/settings.json'
     with open(settingsPath, 'r', encoding='utf-8') as f:
@@ -42,7 +42,7 @@ def do(program_path):
 def get_download_version(current_version, url):
     """
     根据本地Chrome版本号获取可下载的ChromeDriver版本号
-    :param current_version: 本地Chrome版本号前三位
+    :param current_version: 当前本地Chrome版本号前三位
     :param url: ChromeDriver链接
     :return: 完整版本号
     """
@@ -75,7 +75,8 @@ def download_chromedriver(download_url):
 def get_version(path):
     """
     获取当前ChromeDriver版本号前三位
-    :return:
+    :param path: chromedriver文件夹路径
+    :return: 版本号前三位
     """
     import os
     version_info = Popen([os.path.join(path, 'chromedriver.exe'), '--version'], shell=True,
@@ -107,7 +108,7 @@ def get_chrome_version():
     try:
         # 从注册表中获得版本号
         key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r'Software\Google\Chrome\BLBeacon')
-        version, temp = winreg.QueryValueEx(key, 'version')
+        version, _ = winreg.QueryValueEx(key, 'version')
         return version_re.findall(version)[0]  # 返回前3位版本号
     except WindowsError as e:
         print('Chrome版本检查失败:{}'.format(e))
