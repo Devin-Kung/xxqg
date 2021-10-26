@@ -5,8 +5,8 @@
 <p align="center">
    <img src="https://img.shields.io/badge/python-3.6+-green" alt="python">
    <img src="https://img.shields.io/badge/chrome-87.0.4280+-yellow" alt="chrome">
-   <a href="https://github.com/PRaichu/xxqg/releases/tag/1.0.9.0">
-      <img src="https://img.shields.io/badge/release-1.0.9.0-blue" alt="release">
+   <a href="https://github.com/PRaichu/xxqg/releases/latest">
+      <img src="https://img.shields.io/github/v/release/praichu/xxqg" alt="release">
    </a>
    <a href="https://github.com/PRaichu/xxqg/blob/master/LICENSE">
       <img src="https://img.shields.io/badge/license-MIT-green" alt="license">
