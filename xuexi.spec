@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(['xuexi.py'],
-             pathex=['E:\\gongdefeng\\python\\xxqg'],
+             pathex=[],
              binaries=[],
              datas=[],
              hiddenimports=[],
