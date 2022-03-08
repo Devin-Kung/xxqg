@@ -16,7 +16,7 @@
    <img src="https://img.shields.io/github/downloads/PRaichu/xxqg/total" alt="downloads">
 </p>
 
-# 此脚本最后测试于2021/10/26，运行正常
+# 此脚本最后测试于2022/03/08，运行正常
 
 # 声明
 
@@ -59,11 +59,13 @@
 
 # 运行效果图
 
-<img src="https://github.com/PRaichu/xxqg/blob/master/%E6%95%88%E6%9E%9C%E5%9B%BE1.png?raw=true" alt="观看视频/文章效果图" style="zoom:50%;" />
+<img src="https://github.com/PRaichu/xxqg/blob/master/%E6%95%88%E6%9E%9C%E5%9B%BE1.png?raw=true" alt="程序效果图" style="zoom:50%;" />
 
-<img src="https://github.com/PRaichu/xxqg/blob/master/%E6%95%88%E6%9E%9C%E5%9B%BE2.png?raw=true" alt="答题效果图" style="zoom:50%;" />
+<img src="https://github.com/PRaichu/xxqg/blob/master/%E6%95%88%E6%9E%9C%E5%9B%BE2.png?raw=true" alt="观看视频效果图" style="zoom:50%;" />
 
-<img src="https://github.com/PRaichu/xxqg/blob/master/%E6%95%88%E6%9E%9C%E5%9B%BE3.png?raw=true" alt="结束效果图" style="zoom: 80%;" />
+<img src="https://github.com/PRaichu/xxqg/blob/master/%E6%95%88%E6%9E%9C%E5%9B%BE3.png?raw=true" alt="浏览文章效果图" style="zoom: 80%;" />
+
+<img src="https://github.com/PRaichu/xxqg/blob/master/%E6%95%88%E6%9E%9C%E5%9B%BE4.png?raw=true" alt="答题效果图" style="zoom: 80%;" />
 
 # 项目结构树
 
