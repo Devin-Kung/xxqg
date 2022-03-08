@@ -4,6 +4,7 @@ from enum import Enum
 from rich import print
 from rich.table import Table
 from datetime import datetime
+from selenium.webdriver.common.by import By
 from custom.xuexi_chrome import XuexiChrome
 
 
@@ -40,8 +41,8 @@ def check_task(browser: XuexiChrome):
         settings = f.read()
     settings = loads(settings)
 
-    exam_temp_Path = './data/exam_temp.json'
-    with open(exam_temp_Path, 'r', encoding='utf-8') as f:
+    exam_temp_path = './data/exam_temp.json'
+    with open(exam_temp_path, 'r', encoding='utf-8') as f:
         exam_temp = f.read()
     exam_temp = loads(exam_temp)
 
@@ -50,16 +51,16 @@ def check_task(browser: XuexiChrome):
     browser.xuexi_get('https://pc.xuexi.cn/points/my-points.html')
 
     # 获取各任务项积分
-    scores = browser.find_elements_by_class_name('my-points-card-text')
+    scores = browser.find_elements(by=By.CLASS_NAME, value='my-points-card-text')
     for score in scores:
         tableRow.append(score.text.strip())
 
     # 今日积分
-    todayPoints = browser.find_elements_by_class_name('my-points-points')[0]
-    tableRow.append(todayPoints.text.strip())
+    today_points = browser.find_elements(by=By.CLASS_NAME, value='my-points-points')[1]
+    tableRow.append(today_points.text.strip())
     # 总积分
-    allPoints = browser.find_elements_by_class_name('my-points-points')[1]
-    tableRow.append(allPoints.text.strip())
+    all_points = browser.find_elements(by=By.CLASS_NAME, value='my-points-points')[0]
+    tableRow.append(all_points.text.strip())
 
     # 打印表格
     table.add_row(tableRow[0],
