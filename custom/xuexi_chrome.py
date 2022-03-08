@@ -2,6 +2,7 @@
 from selenium import webdriver
 from random import uniform
 from time import sleep
+from selenium.webdriver.chrome.webdriver import DEFAULT_KEEP_ALIVE
 
 
 class XuexiChrome(webdriver.Chrome):
@@ -9,9 +10,10 @@ class XuexiChrome(webdriver.Chrome):
     自定义webdriver
     """
     def __init__(self, executable_path="chromedriver", port=0, options=None, service_args=None,
-                 desired_capabilities=None, service_log_path=None, chrome_options=None, keep_alive=True):
+                 desired_capabilities=None, service_log_path=None, chrome_options=None,
+                 service=None, keep_alive=DEFAULT_KEEP_ALIVE):
         super().__init__(executable_path, port, options, service_args, desired_capabilities, service_log_path,
-                         chrome_options, keep_alive)
+                         chrome_options, service, keep_alive)
 
     def xuexi_get(self, url):
         """
