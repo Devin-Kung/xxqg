@@ -35,9 +35,9 @@ def check_task(browser: XuexiChrome):
     table.add_column("专项答题", justify='center')
     table.add_column("今日累计积分", justify='center')
     table.add_column("成长总积分", justify='center')
-    tableRow = []
-    settingsPath = 'data/settings.json'
-    with open(settingsPath, 'r', encoding='utf-8') as f:
+    table_row = []
+    settings_path = 'data/settings.json'
+    with open(settings_path, 'r', encoding='utf-8') as f:
         settings = f.read()
     settings = loads(settings)
 
@@ -53,25 +53,25 @@ def check_task(browser: XuexiChrome):
     # 获取各任务项积分
     scores = browser.find_elements(by=By.CLASS_NAME, value='my-points-card-text')
     for score in scores:
-        tableRow.append(score.text.strip())
+        table_row.append(score.text.strip())
 
     # 今日积分
     today_points = browser.find_elements(by=By.CLASS_NAME, value='my-points-points')[1]
-    tableRow.append(today_points.text.strip())
+    table_row.append(today_points.text.strip())
     # 总积分
     all_points = browser.find_elements(by=By.CLASS_NAME, value='my-points-points')[0]
-    tableRow.append(all_points.text.strip())
+    table_row.append(all_points.text.strip())
 
     # 打印表格
-    table.add_row(tableRow[0],
-                  tableRow[1],
-                  tableRow[2],
-                  tableRow[3],
-                  tableRow[4],
-                  tableRow[5],
-                  tableRow[6],
-                  tableRow[7] + '分',
-                  tableRow[8] + '分')
+    table.add_row(table_row[0],
+                  table_row[1],
+                  table_row[2],
+                  table_row[3],
+                  table_row[4],
+                  table_row[5],
+                  table_row[6],
+                  table_row[7] + '分',
+                  table_row[8] + '分')
     print(table)
 
     if settings['浏览文章'] == "true" and scores[1].text != '12分/12分':
@@ -86,15 +86,15 @@ def check_task(browser: XuexiChrome):
     if settings['自动答题'] != 'true':
         return res
 
-    dayOfWeek = str(datetime.now().isoweekday())
+    day_of_week = str(datetime.now().isoweekday())
     if settings['每日答题'] == 'true' and res == CheckResType.NULL and scores[4].text != '5分/5分':
-        if settings['答题时间设置']['是否启用(关闭则每天都答题)'] != 'true' or (settings['答题时间设置']['是否启用(关闭则每天都答题)'] == 'true' and dayOfWeek in settings['答题时间设置']['答题类型(数字代表星期几)']['每日答题']):
+        if settings['答题时间设置']['是否启用(关闭则每天都答题)'] != 'true' or (settings['答题时间设置']['是否启用(关闭则每天都答题)'] == 'true' and day_of_week in settings['答题时间设置']['答题类型(数字代表星期几)']['每日答题']):
             res = CheckResType.DAILY_EXAM
     if exam_temp['WEEKLY_EXAM'] == 'true' and settings['每周答题'] == 'true' and res == CheckResType.NULL and scores[5].text != '5分/5分':
-        if settings['答题时间设置']['是否启用(关闭则每天都答题)'] != 'true' or (settings['答题时间设置']['是否启用(关闭则每天都答题)'] == 'true' and dayOfWeek in settings['答题时间设置']['答题类型(数字代表星期几)']['每周答题']):
+        if settings['答题时间设置']['是否启用(关闭则每天都答题)'] != 'true' or (settings['答题时间设置']['是否启用(关闭则每天都答题)'] == 'true' and day_of_week in settings['答题时间设置']['答题类型(数字代表星期几)']['每周答题']):
             res = CheckResType.WEEKLY_EXAM
     if exam_temp['SPECIAL_EXAM'] == 'true' and settings['专项答题'] == 'true' and res == CheckResType.NULL and scores[6].text != '10分/10分':
-        if settings['答题时间设置']['是否启用(关闭则每天都答题)'] != 'true' or (settings['答题时间设置']['是否启用(关闭则每天都答题)'] == 'true' and dayOfWeek in settings['答题时间设置']['答题类型(数字代表星期几)']['专项答题']):
+        if settings['答题时间设置']['是否启用(关闭则每天都答题)'] != 'true' or (settings['答题时间设置']['是否启用(关闭则每天都答题)'] == 'true' and day_of_week in settings['答题时间设置']['答题类型(数字代表星期几)']['专项答题']):
             res = CheckResType.SPECIAL_EXAM
 
     return res

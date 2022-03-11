@@ -20,29 +20,29 @@ def get_diff(date_str):
 
 
 def is_get_data(file_type):
-    dataPath = './data/lastTime.json'
-    if not Path(dataPath).is_file():
-        with open(dataPath, 'w', encoding='utf-8') as f:
-            dataDict = {
+    data_path = './data/lastTime.json'
+    if not Path(data_path).is_file():
+        with open(data_path, 'w', encoding='utf-8') as f:
+            data_dict = {
                 'articles': '2020-01-01',
                 'videos': '2020-01-01'
             }
-            f.write(dumps(dataDict, ensure_ascii=False, indent=4))
+            f.write(dumps(data_dict, ensure_ascii=False, indent=4))
         return True
     else:
-        with open(dataPath, 'r', encoding='utf-8') as f:
-            lastTime = loads(f.read())
-            diff_days = get_diff(lastTime[file_type])
+        with open(data_path, 'r', encoding='utf-8') as f:
+            last_time = loads(f.read())
+            diff_days = get_diff(last_time[file_type])
     return diff_days > 30
 
 
 def set_time(file_type):
-    dataPath = './data/lastTime.json'
-    with open(dataPath, 'r', encoding='utf-8') as f:
-        dataDict = loads(f.read())
-        dataDict[file_type] = strftime("%Y-%m-%d", localtime())
-    with open(dataPath, 'w', encoding='utf-8') as f:
-        f.write(dumps(dataDict, ensure_ascii=False, indent=4))
+    data_path = './data/lastTime.json'
+    with open(data_path, 'r', encoding='utf-8') as f:
+        data_dict = loads(f.read())
+        data_dict[file_type] = strftime("%Y-%m-%d", localtime())
+    with open(data_path, 'w', encoding='utf-8') as f:
+        f.write(dumps(data_dict, ensure_ascii=False, indent=4))
 
 
 if __name__ == '__main__':

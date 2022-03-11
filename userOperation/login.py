@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 from time import sleep
+from selenium.webdriver.common.by import By
 from custom.xuexi_chrome import XuexiChrome
 
 
@@ -13,7 +14,7 @@ def login(browser: XuexiChrome):
     sleep(2.5)
     print('--> 请在5分钟内扫码完成登录')
     browser.implicitly_wait(10)
-    qglogin = browser.find_element_by_id('qglogin')
+    qglogin = browser.find_element(by=By.ID, value='qglogin')
     browser.execute_script('arguments[0].scrollIntoView();', qglogin)
 
     for i in range(60):
