@@ -45,20 +45,20 @@ def run():
     :return: null
     """
     while True:
-        checkRes = check.check_task(browser)
-        if checkRes == check.CheckResType.NULL:
+        check_res = check.check_task(browser)
+        if check_res == check.CheckResType.NULL:
             break
-        elif checkRes == check.CheckResType.ARTICLE:
+        elif check_res == check.CheckResType.ARTICLE:
             scan_article.scan_article(browser)
-        elif checkRes == check.CheckResType.VIDEO:
+        elif check_res == check.CheckResType.VIDEO:
             watch_video.watch_video(browser)
-        elif checkRes == check.CheckResType.ARTICLE_AND_VIDEO:
+        elif check_res == check.CheckResType.ARTICLE_AND_VIDEO:
             if article_or_video() == 1:
                 scan_article.scan_article(browser)
             else:
                 watch_video.watch_video(browser)
         else:
-            exam.to_exam(browser, checkRes)
+            exam.to_exam(browser, check_res)
 
 
 def finally_run():
