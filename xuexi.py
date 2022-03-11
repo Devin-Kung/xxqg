@@ -85,8 +85,8 @@ if __name__ == "__main__":
         from sys import exit
         import ctypes
         from os import getcwd, remove, path
-
-        ctypes.windll.kernel32.SetConsoleTitleW('xuexi-{}'.format(VERSION))
+        if get_chromedriver.PLATFROME == 'win':
+            ctypes.windll.kernel32.SetConsoleTitleW('xuexi-{}'.format(VERSION))
 
         try:
             check_version.check()
@@ -110,7 +110,8 @@ if __name__ == "__main__":
         chrome_options.add_argument('--ignore-ssl-errors')  # 忽略ssl错误
         chrome_options.add_argument('–log-level=3')
 
-        browser = XuexiChrome(path.join(getcwd(), 'chromedriver.exe'), options=chrome_options)
+        browser = XuexiChrome(path.join(getcwd(), get_chromedriver.CHROMEDIRVER), options=chrome_options)
+
         browser.maximize_window()
 
         exam_temp_Path = './data/exam_temp.json'
