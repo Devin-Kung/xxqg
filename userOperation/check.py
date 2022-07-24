@@ -31,8 +31,8 @@ def check_task(browser: XuexiChrome):
     table.add_column("视频数量", justify='center')
     table.add_column("视频时长", justify='center')
     table.add_column("每日答题", justify='center')
-    table.add_column("每周答题", justify='center')
     table.add_column("专项答题", justify='center')
+    table.add_column("每周答题", justify='center')
     table.add_column("今日累计积分", justify='center')
     table.add_column("成长总积分", justify='center')
     table_row = []
@@ -49,6 +49,9 @@ def check_task(browser: XuexiChrome):
     res = CheckResType.NULL
     browser.xuexi_get('https://www.xuexi.cn/index.html')
     browser.xuexi_get('https://pc.xuexi.cn/points/my-points.html')
+
+    # 获取各任务项底部按钮
+    task_buttons = browser.find_elements(by=By.CLASS_NAME, value='big')
 
     # 获取各任务项积分
     scores = browser.find_elements(by=By.CLASS_NAME, value='my-points-card-text')
@@ -87,14 +90,14 @@ def check_task(browser: XuexiChrome):
         return res
 
     day_of_week = str(datetime.now().isoweekday())
-    if settings['每日答题'] == 'true' and res == CheckResType.NULL and scores[4].text != '5分/5分':
+    if settings['每日答题'] == 'true' and res == CheckResType.NULL and task_buttons[4].text != '已完成':
         if settings['答题时间设置']['是否启用(关闭则每天都答题)'] != 'true' or (settings['答题时间设置']['是否启用(关闭则每天都答题)'] == 'true' and day_of_week in settings['答题时间设置']['答题类型(数字代表星期几)']['每日答题']):
             res = CheckResType.DAILY_EXAM
-    if exam_temp['WEEKLY_EXAM'] == 'true' and settings['每周答题'] == 'true' and res == CheckResType.NULL and scores[5].text != '5分/5分':
-        if settings['答题时间设置']['是否启用(关闭则每天都答题)'] != 'true' or (settings['答题时间设置']['是否启用(关闭则每天都答题)'] == 'true' and day_of_week in settings['答题时间设置']['答题类型(数字代表星期几)']['每周答题']):
-            res = CheckResType.WEEKLY_EXAM
-    if exam_temp['SPECIAL_EXAM'] == 'true' and settings['专项答题'] == 'true' and res == CheckResType.NULL and scores[6].text != '10分/10分':
+    if exam_temp['SPECIAL_EXAM'] == 'true' and settings['专项答题'] == 'true' and res == CheckResType.NULL and task_buttons[5].text != '已完成':
         if settings['答题时间设置']['是否启用(关闭则每天都答题)'] != 'true' or (settings['答题时间设置']['是否启用(关闭则每天都答题)'] == 'true' and day_of_week in settings['答题时间设置']['答题类型(数字代表星期几)']['专项答题']):
             res = CheckResType.SPECIAL_EXAM
+    if exam_temp['WEEKLY_EXAM'] == 'true' and settings['每周答题'] == 'true' and res == CheckResType.NULL and task_buttons[6].text != '已完成':
+        if settings['答题时间设置']['是否启用(关闭则每天都答题)'] != 'true' or (settings['答题时间设置']['是否启用(关闭则每天都答题)'] == 'true' and day_of_week in settings['答题时间设置']['答题类型(数字代表星期几)']['每周答题']):
+            res = CheckResType.WEEKLY_EXAM
 
     return res

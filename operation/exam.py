@@ -92,17 +92,17 @@ def to_exam(browser: XuexiChrome, exam_type: check.CheckResType):
         click(browser, daily)
         sleep(round(uniform(2, 4), 2))
         run_exam(browser)
-    elif exam_type == check.CheckResType.WEEKLY_EXAM:
-        weekly = exam[5]
-        browser.execute_script('arguments[0].scrollIntoView();', weekly)
-        sleep(round(uniform(1, 2), 2))
-        click(browser, weekly)
-        check_exam(browser, exam_type)
     elif exam_type == check.CheckResType.SPECIAL_EXAM:
-        special = exam[6]
+        special = exam[5]
         browser.execute_script('arguments[0].scrollIntoView();', special)
         sleep(round(uniform(1, 2), 2))
         click(browser, special)
+        check_exam(browser, exam_type)
+    elif exam_type == check.CheckResType.WEEKLY_EXAM:
+        weekly = exam[6]
+        browser.execute_script('arguments[0].scrollIntoView();', weekly)
+        sleep(round(uniform(1, 2), 2))
+        click(browser, weekly)
         check_exam(browser, exam_type)
 
 
