@@ -51,12 +51,11 @@ def get_download_version(current_version):
     version_list = []
 
     for item in rep:
-        if item['date'] == '-' and len(item['name']) > 5 and r'[a-zA-Z]':
-            letter_re = re.compile(r'[A-Za-z]', re.S)
-            letter_res = re.findall(letter_re, item['name'])
-            if len(letter_res):
-                continue
-            version_list.append(item)
+        letter_re = re.compile(r'[A-Za-z]', re.S)
+        letter_res = re.findall(letter_re, item['name'])
+        if len(letter_res):
+            continue
+        version_list.append(item)
 
     download_version = version_list[len(version_list) - 1]
     for item in version_list:
